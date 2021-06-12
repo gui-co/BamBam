@@ -103,7 +103,9 @@ int BamReader::inflateNextBlock(void) {
     infstream.next_in = Z_NULL;
     int ret = inflateInit2(&infstream, -15);
     if (ret != Z_OK) {
-        std::cout << "error: "  << ret << infstream.msg << std::endl;
+        std::cout << "[Error]: unable to initialize zlib (return value: "
+                  << ret << ", error message: " << infstream.msg << ")"
+                  << std::endl;
         return ret;
     }
     infstream.avail_in = cDataLen;
@@ -111,8 +113,9 @@ int BamReader::inflateNextBlock(void) {
     infstream.avail_out = dataLen;
     infstream.next_out = currentBlock.data();
     ret = inflate(&infstream, Z_NO_FLUSH);
-    if (ret != Z_STREAM_END ) {
-        std::cout << "error: " << ret << infstream.msg << std::endl;
+    if (ret != Z_STREAM_END  && ret != Z_OK) {
+        std::cout << "[Error]: unable to inflate data (return value: " << ret
+                  << ", error message: " << infstream.msg << ")" << std::endl;
         inflateEnd(&infstream);
         return -1;
     }
