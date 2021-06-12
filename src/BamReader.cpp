@@ -125,16 +125,22 @@ int BamReader::inflateNextBlock(void) {
     return 0;
 }
 
-void BamReader::readBam(char *buffer, std::streamsize count) {
-    for (int i = 0; i < count; i++) {
+size_t BamReader::readBam(char *buffer, size_t count) {
+    size_t i = 0;
+    while (i < count) {
         if (bamPosition >= currentBlock.size()) {
             int ret = inflateNextBlock();
             if (ret != 0) {
-                break;
+                return i;
+            }
+            if (currentBlock.size() == 0) {
+                return i;
             }
         }
         buffer[i] = currentBlock[bamPosition];
         bamPosition++;
+        i++;
     }
+    return i;
 }
 

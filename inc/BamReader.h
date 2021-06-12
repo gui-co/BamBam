@@ -15,7 +15,7 @@ private:
     std::vector<std::string> sequences;
     std::streamsize bamPosition;
     int inflateNextBlock(void);
-    void readBam(char *buffer, std::streamsize count);
+    size_t readBam(char *buffer, size_t count);
 
 };
 
