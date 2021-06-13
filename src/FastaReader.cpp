@@ -11,8 +11,8 @@ int FastaReader::readFastaFile(const std::string &filename) {
     }
 
     char c;
-    do {
-        file.read(&c, sizeof(c));
+    file.read(&c, sizeof(c));
+    while (!file.eof() && !file.bad()) {
         if (c == '>') {
             // new sequence
             std::string name;
@@ -23,11 +23,10 @@ int FastaReader::readFastaFile(const std::string &filename) {
             }
             do {
                 file.read(&c, sizeof(c));
-            } while (c != '\n');
-            std::cout << name << std::endl;
+            } while (c != '\n' && !file.eof());
             std::string sequence;
             file.read(&c, sizeof(c));
-            while (c != '>') {
+            while (c != '>' && !file.eof()) {
                 switch (c) {
                     case '(':
                         char c1, c2;
@@ -68,8 +67,10 @@ int FastaReader::readFastaFile(const std::string &filename) {
                 file.read(&c, sizeof(c));
             }
             sequences[name] = sequence;
+        } else {
+            file.read(&c, sizeof(c));
         }
-    } while (file.eof());
+    }
 
     return 1;
 }
