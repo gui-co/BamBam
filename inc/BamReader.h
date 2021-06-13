@@ -13,7 +13,7 @@ private:
     std::ifstream file;
     std::vector<uint8_t> currentBlock;
     std::vector<std::string> sequences;
-    std::streamsize bamPosition;
+    size_t bamPosition;
     int inflateNextBlock(void);
     size_t readBam(char *buffer, size_t count);
 
