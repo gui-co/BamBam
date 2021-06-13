@@ -1,5 +1,7 @@
 #pragma once
 
+#include "BamRead.h"
+
 #include <string>
 #include <fstream>
 #include <vector>
@@ -8,6 +10,7 @@ class BamReader {
 
 public:
     int setBamFile(const std::string &filename);
+    BamRead getNextRead(void);
 
 private:
     std::ifstream file;

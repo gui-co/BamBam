@@ -3,6 +3,7 @@ set(CMAKE_CXX_STANDARD 11)
 project(bamAnalyzer)
 
 set(src src/BamReader.cpp
+        src/BamRead.cpp
         src/main.cpp)
 include_directories(inc)
 
