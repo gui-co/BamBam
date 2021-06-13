@@ -2,21 +2,18 @@
 
 #include <string>
 #include <vector>
+#include <utility>
 
 class BamRead {
 
 public:
-    BamRead(void);
-    void setName(char *array, size_t length);
+    int initFromBamBlock(const char *block, size_t length);
     std::string getName(void) const;
-    void setReadSequence(uint8_t *array, size_t length);
-    void setCigar(uint32_t *array, size_t length);
-    std::vector<uint32_t> getCigar(void) const;
 
 private:
     std::string name;
-    std::vector<uint8_t> read;
-    std::vector<uint32_t> cigar;
+    std::vector<std::pair<uint32_t, char>> cigar;
+    std::vector<char> sequence;
 
 };
 

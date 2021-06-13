@@ -61,110 +61,18 @@ BamRead BamReader::getNextRead(void) {
         // end of file
         return BamRead();
     }
-    // refID
-    uint32_t refId;
-    size = sizeof(refId);
-    r = readBam(reinterpret_cast<char*>(&refId), size);
-    success &= (r == size);
-    progress += size;
-    // pos
-    uint32_t pos;
-    size = sizeof(pos);
-    r = readBam(reinterpret_cast<char*>(&pos), size);
-    success &= (r == size);
-    progress += size;
-    // l_read_name
-    uint8_t lReadName;
-    size = sizeof(lReadName);
-    r = readBam(reinterpret_cast<char*>(&lReadName), size);
-    success &= (r == size);
-    progress += size;
-    // mapq
-    uint8_t mapq;
-    size = sizeof(mapq);
-    r = readBam(reinterpret_cast<char*>(&mapq), size);
-    success &= (r == size);
-    progress += size;
-    // bin
-    uint16_t bin;
-    size = sizeof(bin);
-    r = readBam(reinterpret_cast<char*>(&bin), size);
-    success &= (r == size);
-    progress += size;
-    // n_cigar_op
-    uint16_t nCigarOp;
-    size = sizeof(nCigarOp);
-    r = readBam(reinterpret_cast<char*>(&nCigarOp), size);
-    success &= (r == size);
-    progress += size;
-    // flag
-    uint16_t flag;
-    size = sizeof(flag);
-    r = readBam(reinterpret_cast<char*>(&flag), size);
-    success &= (r == size);
-    progress += size;
-    // l_seq
-    uint32_t lSeq;
-    size = sizeof(lSeq);
-    r = readBam(reinterpret_cast<char*>(&lSeq), size);
-    success &= (r == size);
-    progress += size;
-    // next_refID
-    uint32_t nextRefId;
-    size = sizeof(nextRefId);
-    r = readBam(reinterpret_cast<char*>(&nextRefId), size);
-    success &= (r == size);
-    progress += size;
-    // next_pos
-    uint32_t nextPos;
-    size = sizeof(nextPos);
-    r = readBam(reinterpret_cast<char*>(&nextPos), size);
-    success &= (r == size);
-    progress += size;
-    // tlen
-    uint32_t tLen;
-    size = sizeof(tLen);
-    r = readBam(reinterpret_cast<char*>(&tLen), size);
-    success &= (r == size);
-    progress += size;
-    // read_name
-    char readName[lReadName];
-    size = lReadName * sizeof(char);
-    r = readBam(reinterpret_cast<char*>(readName), size);
-    success &= (r == size);
-    progress += size;
-    // cigar
-    uint32_t cigar[nCigarOp];
-    size = nCigarOp * sizeof(uint32_t);
-    r = readBam(reinterpret_cast<char*>(cigar), size);
-    success &= (r == size);
-    progress += size;
-    // seq
-    uint8_t seq[(lSeq + 1) / 2];
-    size = ((lSeq + 1) / 2) * sizeof(uint8_t);
-    r = readBam(reinterpret_cast<char*>(seq), size);
-    success &= (r == size);
-    progress += size;
-    char qual[lSeq];
-    size = lSeq * sizeof(char);
-    r = readBam(reinterpret_cast<char*>(qual), size);
-    success &= (r == size);
-    progress += size;
-    // move to the end of the read
-    uint32_t endSize = blockSize - progress;
-    uint8_t dummy[endSize];
-    r = readBam(reinterpret_cast<char*>(dummy), endSize);
-    success &= (r == endSize);
 
-    if (!success) {
+    char *block;
+    block = new char[blockSize];
+    r = readBam(reinterpret_cast<char*>(block), blockSize);
+    if (r != blockSize) {
         std::cout << "[Error]: alignment block is corrupted" << std::endl;
         return BamRead();
     }
 
     BamRead read;
-    read.setName(readName, lReadName);
-    read.setReadSequence(seq, (lSeq + 1) / 2);
-    read.setCigar(cigar, nCigarOp);
+    read.initFromBamBlock(block, blockSize);
+    delete[] block;
     return read;
 }
 
