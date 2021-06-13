@@ -133,7 +133,7 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
     return 0;
 }
 
-std::string BamRead::getName(void) const{
+std::string BamRead::getName(void) const {
     return name;
 }
 
