@@ -72,6 +72,7 @@ BamRead BamReader::getNextRead(void) {
 
     BamRead read;
     read.initFromBamBlock(block, blockSize);
+    read.setSequenceName(sequences);
     delete[] block;
     return read;
 }
