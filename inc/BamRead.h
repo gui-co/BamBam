@@ -13,7 +13,7 @@ public:
 private:
     std::string name;
     std::vector<std::pair<uint32_t, char>> cigar;
-    std::vector<char> sequence;
+    std::string sequence;
 
 };
 
