@@ -14,6 +14,7 @@ private:
     std::string name;
     std::string cigar;
     std::string sequence;
+    std::vector<int> quality;
 
 };
 

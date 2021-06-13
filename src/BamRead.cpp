@@ -11,6 +11,7 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
     size_t namePos = 32;
     size_t cigarPos = namePos + lReadName * sizeof(uint8_t);
     size_t seqPos = cigarPos + nCigarOp * sizeof(uint32_t);
+    size_t qualPos = seqPos + ((lSeq + 1) / 2) * sizeof(uint8_t);
 
     // name
     name = std::string(&(block[32]), lReadName);
@@ -122,6 +123,11 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
             }
         sequence.push_back(bases[i]);
         }
+    }
+
+    for (size_t i = 0; i < lSeq; i++) {
+        uint8_t qual = *(uint8_t*)(block + qualPos + i * sizeof(uint8_t));
+        quality.push_back(qual);
     }
 
     return 0;
