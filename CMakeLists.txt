@@ -4,6 +4,7 @@ project(bamAnalyzer)
 
 set(src src/BamReader.cpp
         src/BamRead.cpp
+        src/FastaReader.cpp
         src/main.cpp)
 include_directories(inc)
 
