@@ -53,7 +53,9 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
                           << std::endl;
                 return -1;
         }
-        cigar.push_back(std::make_pair(opLen, op));
+        for (size_t j = 0; j < opLen; j++) {
+            cigar.push_back(op);
+        }
     }
 
     // seq

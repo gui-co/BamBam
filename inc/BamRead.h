@@ -12,7 +12,7 @@ public:
 
 private:
     std::string name;
-    std::vector<std::pair<uint32_t, char>> cigar;
+    std::string cigar;
     std::string sequence;
 
 };
