@@ -11,6 +11,7 @@ public:
     void setSequenceName(const std::vector<std::string> &sequences);
     std::string getSequenceName(void);
     std::string getName(void) const;
+    std::string getCigar(void) const;
 
 private:
     int32_t refId;

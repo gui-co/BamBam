@@ -148,3 +148,7 @@ std::string BamRead::getName(void) const {
     return name;
 }
 
+std::string BamRead::getCigar(void) const {
+    return cigar;
+}
+
