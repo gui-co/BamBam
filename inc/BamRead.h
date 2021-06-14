@@ -10,6 +10,7 @@ public:
     int initFromBamBlock(const char *block, size_t length);
     void setSequenceName(const std::vector<std::string> &sequences);
     std::string getSequenceName(void);
+    std::string getAlignedSequence(void);
     size_t getStartPosition(void);
     std::string getName(void) const;
     std::string getCigar(void) const;
@@ -20,7 +21,7 @@ private:
     std::string sequenceName;
     std::string name;
     std::string cigar;
-    std::string sequence;
+    std::string alignedSequence;
     std::vector<int> quality;
 
 };

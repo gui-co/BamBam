@@ -126,7 +126,7 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
                           << std::endl;
                 return -1;
             }
-        sequence.push_back(bases[i]);
+        alignedSequence.push_back(bases[i]);
         }
     }
 
@@ -146,6 +146,10 @@ void BamRead::setSequenceName(const std::vector<std::string> &sequences) {
 
 std::string BamRead::getSequenceName(void) {
     return sequenceName;
+}
+
+std::string BamRead::getAlignedSequence(void) {
+    return alignedSequence;
 }
 
 size_t BamRead::getStartPosition(void) {
