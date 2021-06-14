@@ -72,7 +72,7 @@ int FastaReader::readFastaFile(const std::string &filename) {
         }
     }
 
-    return 1;
+    return 0;
 }
 
 std::string FastaReader::getSequence(const std::string &name) {
