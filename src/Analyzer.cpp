@@ -31,11 +31,12 @@ void Analyzer::analyze(void) {
     }
 
     BamRead read = bamReader->getNextRead();
-    while (read.getName() != "") {
-        sequence = fastaReader.getSequence(read.getSequenceName());
-        if (sequence == "") {
-            std::cout << "[Error]: sequence not found in fasta file"
-                      << std::endl;
+    while (!read.getName().empty()) {
+        std::string sequenceName = read.getSequenceName();
+        std::string refSeq = fastaReader->getSequence(sequenceName);
+        if (refSeq == "") {
+            std::cout << "[Error]: sequence \"" << sequenceName << "\" not "
+                         "found in fasta file" << std::endl;
             continue;
         }
         read = bamReader->getNextRead();
