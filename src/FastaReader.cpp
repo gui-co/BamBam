@@ -6,7 +6,8 @@
 int FastaReader::readFastaFile(const std::string &filename) {
     std::ifstream file(filename, std::ios::binary);
     if (!file.is_open()) {
-        std::cout << "[Error]: Unable to open " << filename << std::endl;
+        std::cout << "[ERROR] unable to open fasta file \"" << filename << "\""
+                  << std::endl;
         return -1;
     }
 
@@ -60,8 +61,9 @@ int FastaReader::readFastaFile(const std::string &filename) {
                     case '\n':
                         break;
                     default:
-                        std::cout << "[Error]: sequence " << name << " is "
-                                     "corrupted" << std::endl;
+                        std::cout << "[ERROR] fasta file is corrupted, "
+                                     "sequence \"" << name << "\" is not "
+                                     "properly formatted" << std::endl;
                         return -1;
                 }
                 file.read(&c, sizeof(c));
