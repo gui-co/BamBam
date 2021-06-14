@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
 
 class Analysis {
 
@@ -15,6 +16,7 @@ public:
     void addMismatch(size_t position, StrandPolarity pol);
     void addInsertion(size_t position, StrandPolarity pol);
     void addDeletion(size_t position, StrandPolarity pol);
+    int exportToFile(std::ofstream &filePlus, std::ofstream &fileMinus);
 
 private:
     std::string name;

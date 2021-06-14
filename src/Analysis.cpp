@@ -1,5 +1,7 @@
 #include "Analysis.h"
 
+#include <iostream>
+
 Analysis::Analysis(const std::string &sequenceName, const std::string &sequence)
     : name(sequenceName), sequence(sequence),
       readsPlus(sequence.size()), readsMinus(sequence.size()),
@@ -57,5 +59,31 @@ void Analysis::addDeletion(size_t position, StrandPolarity pol) {
             deletionsMinus[position]++;
         }
     }
+}
+
+int Analysis::exportToFile(std::ofstream &filePlus, std::ofstream &fileMinus) {
+    if (!filePlus.is_open() || !fileMinus.is_open()) {
+        std::cout << "[ERROR] unable to export analysis of sequence \"" 
+                  << name << "\"" << std::endl;
+        return -1;
+    }
+
+    for (size_t i = 0; i < sequence.size(); i++) {
+        filePlus << name              << " "
+                 << sequence[i]       << " "
+                 << matchesPlus[i]    << " "
+                 << mismatchesPlus[i] << " "
+                 << insertionsPlus[i] << " "
+                 << deletionsPlus[i]  << " " << std::endl;
+
+        fileMinus << name               << " "
+                  << sequence[i]        << " "
+                  << matchesMinus[i]    << " "
+                  << mismatchesMinus[i] << " "
+                  << insertionsMinus[i] << " "
+                  << deletionsMinus[i]   << " " << std::endl;
+    }
+
+    return 0;
 }
 
