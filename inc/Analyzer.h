@@ -2,6 +2,9 @@
 
 #include "FastaReader.h"
 #include "BamReader.h"
+#include "Analysis.h"
+
+#include <map>
 
 class Analyzer {
 
@@ -13,5 +16,6 @@ public:
 private:
     FastaReader *fastaReader;
     BamReader *bamReader;
+    std::map<std::string, Analysis*> results;
 };
 
