@@ -4,7 +4,7 @@
 
 int BamRead::initFromBamBlock(const char *block, size_t length)
 {
-    int32_t pos = *(int32_t*)(block + 4);
+    startPosition = *(int32_t*)(block + 4);
     refId = *(int32_t*)(block + 0);
     uint8_t lReadName = *(uint8_t*)(block + 8);
     uint16_t nCigarOp = *(uint16_t*)(block + 12);
@@ -146,6 +146,10 @@ void BamRead::setSequenceName(const std::vector<std::string> &sequences) {
 
 std::string BamRead::getSequenceName(void) {
     return sequenceName;
+}
+
+size_t BamRead::getStartPosition(void) {
+    return startPosition;
 }
 
 std::string BamRead::getName(void) const {
