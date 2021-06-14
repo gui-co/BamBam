@@ -12,6 +12,7 @@ public:
     std::string getSequenceName(void);
     std::string getAlignedSequence(void);
     size_t getStartPosition(void);
+    uint8_t getFlag(void);
     std::string getName(void) const;
     std::string getCigar(void) const;
 
@@ -20,6 +21,7 @@ private:
     size_t startPosition;
     std::string sequenceName;
     std::string name;
+    uint16_t flag;
     std::string cigar;
     std::string alignedSequence;
     std::vector<int> quality;

@@ -8,6 +8,7 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
     refId = *(int32_t*)(block + 0);
     uint8_t lReadName = *(uint8_t*)(block + 8);
     uint16_t nCigarOp = *(uint16_t*)(block + 12);
+    flag = *(uint16_t*)(block + 14);
     uint32_t lSeq = *(uint16_t*)(block + 16);
     size_t namePos = 32;
     size_t cigarPos = namePos + lReadName * sizeof(uint8_t);
@@ -154,6 +155,10 @@ std::string BamRead::getAlignedSequence(void) {
 
 size_t BamRead::getStartPosition(void) {
     return startPosition;
+}
+
+uint8_t BamRead::getFlag(void) {
+    return flag;
 }
 
 std::string BamRead::getName(void) const {
