@@ -1,3 +1,6 @@
+#include "FastaReader.h"
+#include "BamReader.h"
+
 #include <unistd.h>
 
 #include <iostream>
@@ -26,14 +29,26 @@ int main(int argc,  char** argv) {
         }
     }
 
+    if (bamFile.empty()) {
+        std::cout << "[Error]: please provide a bam file" << std::endl;
+        usage(argv[0]);
+        return -1;
+    }
+    BamReader bamReader;
+    if (bamReader.setBamFile(bamFile) != 0) {
+        std::cout << "[Error]: bam file is not valid" << std::endl;
+        usage(argv[0]);
+        return -1;
+    }
+
     if (fastaFile.empty()) {
         std::cout << "[Error]: please provide a fasta file" << std::endl;
         usage(argv[0]);
         return -1;
     }
-
-    if (bamFile.empty()) {
-        std::cout << "[Error]: please provide a bam file" << std::endl;
+    FastaReader fastaReader;
+    if (fastaReader.readFastaFile(fastaFile) != 0) {
+        std::cout << "[Error]: fasta file is not valid" << std::endl;
         usage(argv[0]);
         return -1;
     }
