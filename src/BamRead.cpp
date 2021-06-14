@@ -14,8 +14,12 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
     size_t seqPos = cigarPos + nCigarOp * sizeof(uint32_t);
     size_t qualPos = seqPos + ((lSeq + 1) / 2) * sizeof(uint8_t);
 
-    // name
-    name = std::string(&(block[32]), lReadName);
+    // name (name is null terminated
+    if (block[32 + lReadName - 1] != '\0') {
+        std::cout << "[Error]: alignment block is corrupted" << std::endl;
+        return -1;
+    }
+    name = std::string(&(block[32]), lReadName - 1);
 
     // cigar
     for (size_t i = 0; i < nCigarOp; i++) {
