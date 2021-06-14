@@ -9,13 +9,15 @@
 int BamReader::setBamFile(const std::string &filename) {
     file = std::ifstream(filename, std::ios::binary);
     if (!file.is_open()) {
-        std::cout << "[Error]: Unable to open " << filename << std::endl;
+        std::cout << "[ERROR] unable to open BAM file \"" << filename << "\""
+                  << std::endl;
         return -1;
     }
     char magic[4];
     readBam(reinterpret_cast<char*>(magic), 4);
     if (strncmp(magic, "BAM\1", 4) != 0) {
-        std::cout << "[Error]: " << filename << " is not a BAM file"
+        std::cout << "[ERROR] \"" << filename << "\" does not look like a BAM "
+                     "file"
                   << std::endl;
         return -1;
     }
@@ -35,8 +37,8 @@ int BamReader::setBamFile(const std::string &filename) {
         char name[lName];
         readBam(reinterpret_cast<char*>(name), lName);
         if (name[lName - 1] != '\0') {
-            std::cout << "[Error]: header of " << filename << " is not "
-                      << "correclty formatted" << std::endl;
+            std::cout << "[ERROR] BAM file is corrupted, problem in the header"
+                      << std::endl;
             return -1;
         }
         sequences.push_back(std::string(name));
@@ -66,7 +68,8 @@ BamRead BamReader::getNextRead(void) {
     block = new char[blockSize];
     r = readBam(reinterpret_cast<char*>(block), blockSize);
     if (r != blockSize) {
-        std::cout << "[Error]: alignment block is corrupted" << std::endl;
+        std::cout << "[ERROR] alignment block is corrupted in BAM file"
+                  << std::endl;
         return BamRead();
     }
 
@@ -133,9 +136,9 @@ int BamReader::inflateNextBlock(void) {
     infstream.next_in = Z_NULL;
     int ret = inflateInit2(&infstream, -15);
     if (ret != Z_OK) {
-        std::cout << "[Error]: unable to initialize zlib (return value: "
-                  << ret << ", error message: " << infstream.msg << ")"
-                  << std::endl;
+        std::cout << "[ERROR] unable to properly initialize zlib (return "
+                     "value: " << ret << ", error message: " << infstream.msg
+                  << ")" << std::endl;
         return ret;
     }
     infstream.avail_in = cDataLen;
@@ -144,7 +147,7 @@ int BamReader::inflateNextBlock(void) {
     infstream.next_out = currentBlock.data();
     ret = inflate(&infstream, Z_NO_FLUSH);
     if (ret != Z_STREAM_END  && ret != Z_OK) {
-        std::cout << "[Error]: unable to inflate data (return value: " << ret
+        std::cout << "[ERROR] unable to inflate data (return value: " << ret
                   << ", error message: " << infstream.msg << ")" << std::endl;
         inflateEnd(&infstream);
         return -1;
