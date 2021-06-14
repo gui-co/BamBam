@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 set(CMAKE_CXX_STANDARD 11)
 project(bamAnalyzer)
 
-set(src src/Analyzer.cpp
+set(src src/Analysis.cpp
+        src/Analyzer.cpp
         src/BamReader.cpp
         src/BamRead.cpp
         src/FastaReader.cpp
