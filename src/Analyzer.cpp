@@ -4,6 +4,13 @@
 
 #include <iostream>
 
+Analyzer::~Analyzer(void) {
+    for (auto i = results.begin(); i != results.end(); i++) {
+        delete i->second;
+        i->second = nullptr;
+    }
+}
+
 void Analyzer::setFastaReader(FastaReader *reader) {
     fastaReader = reader;
 }

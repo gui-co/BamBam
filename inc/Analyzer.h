@@ -9,6 +9,7 @@
 class Analyzer {
 
 public:
+    ~Analyzer(void);
     void setFastaReader(FastaReader *reader);
     void setBamReader(BamReader *reader);
     void analyze(void);
