@@ -122,10 +122,10 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
                 case 15:
                     bases[i] = 'N';
                     break;
-            default:
-                std::cout << "[Error]: alignment block is corrupted"
-                          << std::endl;
-                return -1;
+                default:
+                    std::cout << "[Error]: alignment block is corrupted"
+                              << std::endl;
+                    return -1;
             }
         alignedSequence.push_back(bases[i]);
         }
