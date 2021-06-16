@@ -47,6 +47,11 @@ void Analyzer::analyze(void) {
         analysis = results.find(sequenceName)->second;
 
         uint8_t flag = read.getFlag();
+        // ignore reads with these flag values
+        if (flag & 0x0200 || flag & 0x0400 || flag & 0x0800) {
+            read = bamReader->getNextRead();
+            continue;
+        }
         Analysis::StrandPolarity polarity;
         if (flag & 0x0010) {
             polarity = Analysis::MINUS_STRAND;
