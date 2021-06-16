@@ -16,13 +16,17 @@ int main(int argc,  char** argv) {
     int opt;
     std::string fastaFile;
     std::string bamFile;
-    while ((opt = getopt(argc, argv, "f:b:")) != -1) {
+    std::string outputDirectory;
+    while ((opt = getopt(argc, argv, "f:b:o:")) != -1) {
         switch (opt) {
             case 'f':
                 fastaFile = std::string(optarg);
                 break;
             case 'b':
                 bamFile = std::string(optarg);
+                break;
+            case 'o':
+                outputDirectory = std::string(optarg);
                 break;
             default:
                 usage(argv[0]);
