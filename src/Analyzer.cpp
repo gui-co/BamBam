@@ -35,7 +35,7 @@ void Analyzer::analyze(void) {
         std::string sequenceName = read.getSequenceName();
         std::string refSeq = fastaReader->getSequence(sequenceName);
         if (refSeq == "") {
-            std::cout << "[Error]: sequence \"" << sequenceName << "\" not "
+            std::cout << "[ERROR] sequence \"" << sequenceName << "\" not "
                          "found in fasta file" << std::endl;
             continue;
         }
