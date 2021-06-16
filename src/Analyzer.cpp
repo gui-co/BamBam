@@ -48,10 +48,10 @@ void Analyzer::analyze(void) {
 
         uint8_t flag = read.getFlag();
         Analysis::StrandPolarity polarity;
-        if (flag & 0x10) {
-            polarity = Analysis::PLUS_STRAND;
-        } else {
+        if (flag & 0x0010) {
             polarity = Analysis::MINUS_STRAND;
+        } else {
+            polarity = Analysis::PLUS_STRAND;
         }
         size_t refPos = read.getStartPosition();
         size_t alnPos = 0;
