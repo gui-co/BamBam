@@ -106,3 +106,11 @@ void Analyzer::analyze(void) {
     }
 }
 
+void Analyzer::exportData(const std::string &directory) {
+    for (auto it = results.begin(); it != results.end(); it++) {
+        std::ofstream filePlus(directory + it->first + "_plus.data");
+        std::ofstream fileMinus(directory + it->first +"_minus.data");
+        it->second->exportToFile(filePlus, fileMinus);
+    }
+}
+

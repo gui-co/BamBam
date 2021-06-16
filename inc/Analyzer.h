@@ -5,6 +5,7 @@
 #include "Analysis.h"
 
 #include <map>
+#include <string>
 
 class Analyzer {
 
@@ -13,10 +14,12 @@ public:
     void setFastaReader(FastaReader *reader);
     void setBamReader(BamReader *reader);
     void analyze(void);
+    void exportData(const std::string &directory);
 
 private:
     FastaReader *fastaReader;
     BamReader *bamReader;
     std::map<std::string, Analysis*> results;
+
 };
 
