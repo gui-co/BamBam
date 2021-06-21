@@ -1,5 +1,6 @@
 #include "FastaReader.h"
 #include "BamReader.h"
+#include "Analyzer.h"
 
 #include <unistd.h>
 
@@ -63,6 +64,13 @@ int main(int argc,  char** argv) {
         usage(argv[0]);
         return -1;
     }
+
+    Analyzer analyzer;
+    analyzer.setFastaReader(&fastaReader);
+    analyzer.setBamReader(&bamReader);
+
+    analyzer.analyze();
+    analyzer.exportData(outputDirectory);
 
     return 0;
 }
