@@ -70,6 +70,7 @@ int Analysis::exportToFile(std::ofstream &filePlus, std::ofstream &fileMinus) {
 
     for (size_t i = 0; i < sequence.size(); i++) {
         filePlus << name              << " "
+                 << i+1               << " "
                  << sequence[i]       << " "
                  << matchesPlus[i]    << " "
                  << mismatchesPlus[i] << " "
@@ -77,6 +78,7 @@ int Analysis::exportToFile(std::ofstream &filePlus, std::ofstream &fileMinus) {
                  << deletionsPlus[i]  << " " << std::endl;
 
         fileMinus << name               << " "
+                  << i+1                << " "
                   << sequence[i]        << " "
                   << matchesMinus[i]    << " "
                   << mismatchesMinus[i] << " "
