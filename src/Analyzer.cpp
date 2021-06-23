@@ -1,5 +1,6 @@
 #include "Analyzer.h"
 
+#include "Analysis.h"
 #include "BamRead.h"
 
 #include <iostream>
