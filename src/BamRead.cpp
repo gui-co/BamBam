@@ -157,6 +157,10 @@ size_t BamRead::getStartPosition(void) {
     return startPosition;
 }
 
+size_t BamRead::getLength(void) {
+    return alignedSequence.size();
+}
+
 uint8_t BamRead::getFlag(void) {
     return flag;
 }

@@ -12,6 +12,7 @@ public:
     std::string getSequenceName(void);
     std::string getAlignedSequence(void);
     size_t getStartPosition(void);
+    size_t getLength(void);
     uint8_t getFlag(void);
     std::string getName(void) const;
     std::string getCigar(void) const;
