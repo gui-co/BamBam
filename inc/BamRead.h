@@ -26,6 +26,7 @@ private:
     std::string cigar;
     std::string alignedSequence;
     std::vector<int> quality;
+    int alignmentLength;
 
 };
 

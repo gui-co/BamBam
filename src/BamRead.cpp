@@ -9,11 +9,11 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
     uint8_t lReadName = *(uint8_t*)(block + 8);
     uint16_t nCigarOp = *(uint16_t*)(block + 12);
     flag = *(uint16_t*)(block + 14);
-    uint32_t lSeq = *(uint32_t*)(block + 16);
+    alignmentLength = *(uint32_t*)(block + 16);
     size_t namePos = 32;
     size_t cigarPos = namePos + lReadName * sizeof(uint8_t);
     size_t seqPos = cigarPos + nCigarOp * sizeof(uint32_t);
-    size_t qualPos = seqPos + ((lSeq + 1) / 2) * sizeof(uint8_t);
+    size_t qualPos = seqPos + ((alignmentLength + 1) / 2) * sizeof(uint8_t);
 
     // name (name is null terminated
     if (block[32 + lReadName - 1] != '\0') {
@@ -66,7 +66,7 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
     }
 
     // seq
-    for (size_t i = 0; i < (lSeq + 1) / 2; i++) {
+    for (size_t i = 0; i < (alignmentLength + 1) / 2; i++) {
         uint8_t value = *(uint8_t*)(block + seqPos + i * sizeof(uint8_t));
         uint8_t values[2];
         values[0] = value >> 4;
@@ -131,7 +131,7 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
         }
     }
 
-    for (size_t i = 0; i < lSeq; i++) {
+    for (size_t i = 0; i < alignmentLength; i++) {
         uint8_t qual = *(uint8_t*)(block + qualPos + i * sizeof(uint8_t));
         quality.push_back(qual);
     }
@@ -158,7 +158,7 @@ size_t BamRead::getStartPosition(void) {
 }
 
 size_t BamRead::getLength(void) {
-    return alignedSequence.size();
+    return alignmentLength;
 }
 
 uint8_t BamRead::getFlag(void) {
