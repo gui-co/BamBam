@@ -1,14 +1,16 @@
 #include "Analyzer.h"
 
-#include "Analysis.h"
 #include "BamRead.h"
+#include "Transcript.h"
 
 #include <iostream>
 
 Analyzer::~Analyzer(void) {
     for (auto i = results.begin(); i != results.end(); i++) {
-        delete i->second;
-        i->second = nullptr;
+        for (auto j = i->second.begin(); j != i->second.end(); j++) {
+            delete *j;
+            *j = nullptr;
+        }
     }
 }
 
@@ -41,25 +43,44 @@ void Analyzer::analyze(void) {
             continue;
         }
 
-        Analysis *analysis;
-        if (results.find(sequenceName) == results.end()) {
-            results[sequenceName] = new Analysis(sequenceName, refSeq);
-        }
-        analysis = results.find(sequenceName)->second;
-
         uint8_t flag = read.getFlag();
         // ignore reads with these flag values
         if (flag & 0x0004 || flag & 0x0200 || flag & 0x0400 || flag & 0x0800) {
             read = bamReader->getNextRead();
             continue;
         }
-        Analysis::StrandPolarity polarity;
+        // Get strand polarity
+        Transcript::StrandPolarity polarity;
         if (flag & 0x0010) {
-            polarity = Analysis::MINUS_STRAND;
+            polarity = Transcript::MINUS_STRAND;
         } else {
-            polarity = Analysis::PLUS_STRAND;
+            polarity = Transcript::PLUS_STRAND;
         }
-        size_t refPos = read.getStartPosition();
+        size_t readStartPosition = read.getStartPosition();
+
+        Transcript *transcript = nullptr;
+        // Try to find the corresponding transcript
+        auto i = results.find(sequenceName);
+        if (i != results.end()) {
+            auto j = i->second.begin();
+            while ((!transcript) && (j != i->second.end())) {
+                if ((*j)->isReadInside(readStartPosition, polarity))
+                    transcript = *j;
+                j++;
+            }
+        }
+        // Create a new one if not found
+        if (!transcript) {
+            transcript = new Transcript(sequenceName, polarity,
+                                        readStartPosition);
+            if (i == results.end()) {
+                results[sequenceName] = std::list<Transcript*>();
+            }
+            i = results.find(sequenceName);
+            i->second.push_back(transcript);
+        }
+
+        size_t refPos = readStartPosition;
         size_t alnPos = 0;
         std::string alnSeq = read.getAlignedSequence();
         std::string cigar = read.getCigar();
@@ -67,25 +88,25 @@ void Analyzer::analyze(void) {
             switch (cigar[i]) {
                 case 'M':
                     if (alnSeq[alnPos] == refSeq[refPos]) {
-                        analysis->addMatch(refPos, polarity);
+                        transcript->addMatch(refPos);
                     } else {
-                        analysis->addMismatch(refPos, polarity);
+                        transcript->addMismatch(refPos);
                     }
                     refPos++;
                     alnPos++;
                     break;
                 case 'I':
                     if (refPos > 0) {
-                        analysis->addInsertion(refPos - 1, polarity);
+                        transcript->addInsertion(refPos - 1);
                     }
                     alnPos++;
                     break;
                 case 'D':
-                    analysis->addDeletion(refPos, polarity);
+                    transcript->addDeletion(refPos);
                     refPos++;
                     break;
                 case 'N':
-                    analysis->addDeletion(refPos, polarity);
+                    transcript->addDeletion(refPos);
                     refPos++;
                     break;
                 case 'S':
@@ -96,12 +117,12 @@ void Analyzer::analyze(void) {
                 case 'P':
                     break;
                 case '=':
-                    analysis->addMatch(refPos, polarity);
+                    transcript->addMatch(refPos);
                     refPos++;
                     alnPos++;
                     break;
                 case 'X':
-                    analysis->addMismatch(refPos, polarity);
+                    transcript->addMismatch(refPos);
                     refPos++;
                     alnPos++;
                     break;
@@ -116,7 +137,12 @@ void Analyzer::exportData(const std::string &directory) {
     for (auto it = results.begin(); it != results.end(); it++) {
         std::ofstream filePlus(directory + it->first + "_plus.data");
         std::ofstream fileMinus(directory + it->first +"_minus.data");
-        it->second->exportToFile(filePlus, fileMinus);
+        for (auto jt = it->second.begin(); jt != it->second.end(); jt++) {
+            if ((*jt)->isPlus())
+                (*jt)->exportToFile(filePlus);
+            else
+                (*jt)->exportToFile(fileMinus);
+        }
     }
 }
 
