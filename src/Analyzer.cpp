@@ -49,7 +49,7 @@ void Analyzer::analyze(void) {
 
         uint8_t flag = read.getFlag();
         // ignore reads with these flag values
-        if (flag & 0x0200 || flag & 0x0400 || flag & 0x0800) {
+        if (flag & 0x0004 || flag & 0x0200 || flag & 0x0400 || flag & 0x0800) {
             read = bamReader->getNextRead();
             continue;
         }
