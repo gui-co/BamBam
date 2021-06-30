@@ -9,7 +9,7 @@ int BamRead::initFromBamBlock(const char *block, size_t length)
     uint8_t lReadName = *(uint8_t*)(block + 8);
     uint16_t nCigarOp = *(uint16_t*)(block + 12);
     flag = *(uint16_t*)(block + 14);
-    uint32_t lSeq = *(uint16_t*)(block + 16);
+    uint32_t lSeq = *(uint32_t*)(block + 16);
     size_t namePos = 32;
     size_t cigarPos = namePos + lReadName * sizeof(uint8_t);
     size_t seqPos = cigarPos + nCigarOp * sizeof(uint32_t);
