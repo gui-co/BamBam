@@ -173,3 +173,7 @@ std::string BamRead::getCigar(void) const {
     return cigar;
 }
 
+std::vector<int> BamRead::getQuality(void) const {
+    return quality;
+}
+

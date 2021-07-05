@@ -16,6 +16,7 @@ public:
     uint8_t getFlag(void);
     std::string getName(void) const;
     std::string getCigar(void) const;
+    std::vector<int> getQuality(void) const;
 
 private:
     int32_t refId;
