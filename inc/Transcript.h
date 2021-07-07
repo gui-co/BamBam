@@ -18,7 +18,7 @@ public:
     void addRead(size_t position, size_t length);
     void addMatch(size_t position, uint16_t quality);
     void addMismatch(size_t position, uint16_t quality);
-    void addInsertion(size_t position, uint16_t quality);
+    void addInsertion(size_t position);
     void addDeletion(size_t position);
     bool isPlus(void);
     int exportToFile(std::ofstream &file);

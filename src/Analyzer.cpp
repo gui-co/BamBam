@@ -78,7 +78,7 @@ void Analyzer::analyze(void) {
                     alnPos++;
                     break;
                 case 'I':
-                    transcript->addInsertion(refPos, qual[alnPos]);
+                    transcript->addInsertion(refPos);
                     alnPos++;
                     break;
                 case 'D':

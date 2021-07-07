@@ -81,7 +81,7 @@ void Transcript::addMismatch(size_t index, uint16_t quality) {
     (*currentPositionQuality) += quality;
 }
 
-void Transcript::addInsertion(size_t index, uint16_t quality) {
+void Transcript::addInsertion(size_t index) {
     advance(index);
     (*currentPositionInsertions)++;
     // (*currentPositionQuality) += quality;
