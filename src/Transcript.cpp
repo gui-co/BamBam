@@ -9,7 +9,7 @@ Transcript::Transcript(const std::string &sequenceName, StrandPolarity polarity,
       startPosition(startPosition), length(0),
       currentIndex(startPosition), reads(1, 0), matches(1, 0),
       mismatches(1, 0), insertions(1, 0),
-      deletions(1, 0)
+      deletions(1, 0), quality(1, 0)
 {
     std::cout << "create transcript: " << startPosition << std::endl;
     currentPositionReads = reads.begin();
@@ -17,6 +17,7 @@ Transcript::Transcript(const std::string &sequenceName, StrandPolarity polarity,
     currentPositionMismatches = mismatches.begin();
     currentPositionInsertions = insertions.begin();
     currentPositionDeletions = deletions.begin();
+    currentPositionQuality = quality.begin();
 }
 
 bool Transcript::isReadInside(size_t position, StrandPolarity polarity) {
@@ -38,6 +39,7 @@ void Transcript::addRead(size_t position, size_t length) {
     mismatches.insert(mismatches.end(), back, 0);
     insertions.insert(insertions.end(), back, 0);
     deletions.insert(deletions.end(), back, 0);
+    quality.insert(quality.end(), back, 0);
     this->length += back;
 }
 
@@ -51,6 +53,7 @@ void Transcript::advance(size_t index) {
         mismatches.insert(mismatches.end(), toBeAdded, 0);
         deletions.insert(deletions.end(), toBeAdded, 0);
         insertions.insert(insertions.end(), toBeAdded, 0);
+        quality.insert(quality.end(), toBeAdded, 0);
         length = reads.size();
     }
     ssize_t mov = (ssize_t) index - (ssize_t) currentIndex;
@@ -59,24 +62,28 @@ void Transcript::advance(size_t index) {
     std::advance(currentPositionMismatches, mov);
     std::advance(currentPositionInsertions, mov);
     std::advance(currentPositionDeletions, mov);
+    std::advance(currentPositionQuality, mov);
     currentIndex = index;
 }
 
-void Transcript::addMatch(size_t index) {
+void Transcript::addMatch(size_t index, uint16_t quality) {
     advance(index);
     (*currentPositionReads)++;
     (*currentPositionMatches)++;
+    (*currentPositionQuality) += quality;
 }
 
-void Transcript::addMismatch(size_t index) {
+void Transcript::addMismatch(size_t index, uint16_t quality) {
     advance(index);
     (*currentPositionReads)++;
     (*currentPositionMismatches)++;
+    (*currentPositionQuality) += quality;
 }
 
-void Transcript::addInsertion(size_t index) {
+void Transcript::addInsertion(size_t index, uint16_t quality) {
     advance(index);
     (*currentPositionInsertions)++;
+    // (*currentPositionQuality) += quality;
 }
 
 void Transcript::addDeletion(size_t index) {

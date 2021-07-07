@@ -70,17 +70,15 @@ void Analyzer::analyze(void) {
             switch (cigar[i]) {
                 case 'M':
                     if (alnSeq[alnPos] == refSeq[refPos]) {
-                        transcript->addMatch(refPos);
+                        transcript->addMatch(refPos, qual[alnPos]);
                     } else {
-                        transcript->addMismatch(refPos);
+                        transcript->addMismatch(refPos, qual[alnPos]);
                     }
                     refPos++;
                     alnPos++;
                     break;
                 case 'I':
-                    if (refPos > 0) {
-                        transcript->addInsertion(refPos - 1);
-                    }
+                    transcript->addInsertion(refPos, qual[alnPos]);
                     alnPos++;
                     break;
                 case 'D':
@@ -98,12 +96,12 @@ void Analyzer::analyze(void) {
                 case 'P':
                     break;
                 case '=':
-                    transcript->addMatch(refPos);
+                    transcript->addMatch(refPos, qual[alnPos]);
                     refPos++;
                     alnPos++;
                     break;
                 case 'X':
-                    transcript->addMismatch(refPos);
+                    transcript->addMismatch(refPos, qual[alnPos]);
                     refPos++;
                     alnPos++;
                     break;
