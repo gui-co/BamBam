@@ -7,7 +7,7 @@
 Transcript::Transcript(const std::string &sequenceName, StrandPolarity polarity,
                        int startPosition)
     : sequenceName(sequenceName), polarity(polarity),
-      startPosition(startPosition), length(0),
+      startPosition(startPosition), length(1),
       currentIndex(startPosition), reads(1, 0), matches(1, 0),
       mismatches(1, 0), insertions(1, 0),
       deletions(1, 0), quality(1, 0)
