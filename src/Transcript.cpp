@@ -120,7 +120,7 @@ int Transcript::exportToFile(std::ofstream &file) {
             file << sequenceName << " "
                  << i+1
                  << std::setw(4)  << *itReads
-                 << std::setw(10) << (double) *itQuality / *itReads
+                 << std::setw(10) << (double) *itQuality / (*itMatches + *itMismatches)
                  << std::setw(10) << (double) *itMismatches / *itReads
                  << std::setw(10) << (double) *itInsertions / *itReads
                  << std::setw(10) << (double) *itDeletions / *itReads << std::endl;
