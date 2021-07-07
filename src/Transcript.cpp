@@ -12,7 +12,6 @@ Transcript::Transcript(const std::string &sequenceName, StrandPolarity polarity,
       mismatches(1, 0), insertions(1, 0),
       deletions(1, 0), quality(1, 0)
 {
-    std::cout << "create transcript: " << startPosition << std::endl;
     currentPositionReads = reads.begin();
     currentPositionMatches = matches.begin();
     currentPositionMismatches = mismatches.begin();
