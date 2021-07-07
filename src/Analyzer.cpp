@@ -112,19 +112,6 @@ void Analyzer::analyze(void) {
     }
 }
 
-void Analyzer::exportData(const std::string &directory) {
-    for (auto it = results.begin(); it != results.end(); it++) {
-        std::ofstream filePlus(directory + it->first + "_plus.data");
-        std::ofstream fileMinus(directory + it->first +"_minus.data");
-        for (auto jt = it->second.begin(); jt != it->second.end(); jt++) {
-            if ((*jt)->isPlus())
-                (*jt)->exportToFile(filePlus);
-            else
-                (*jt)->exportToFile(fileMinus);
-        }
-    }
-}
-
 Transcript *Analyzer::findTranscript(std::string sequenceName,
                                      Transcript::StrandPolarity polarity,
                                      size_t pos) {

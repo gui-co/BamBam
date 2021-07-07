@@ -15,7 +15,6 @@ public:
     void setFastaReader(FastaReader *reader);
     void setBamReader(BamReader *reader);
     void analyze(void);
-    void exportData(const std::string &directory);
 
 private:
     FastaReader *fastaReader;

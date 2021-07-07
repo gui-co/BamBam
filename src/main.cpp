@@ -70,7 +70,6 @@ int main(int argc,  char** argv) {
     analyzer.setBamReader(&bamReader);
 
     analyzer.analyze();
-    analyzer.exportData(outputDirectory);
 
     return 0;
 }
