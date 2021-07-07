@@ -21,6 +21,8 @@ private:
     FastaReader *fastaReader;
     BamReader *bamReader;
     std::map<std::string, std::list<Transcript*> > results;
+    Transcript *findTranscript(std::string sequenceName,
+                               Transcript::StrandPolarity polarity, size_t pos);
 
 };
 
