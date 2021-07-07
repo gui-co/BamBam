@@ -65,6 +65,7 @@ void Analyzer::analyze(void) {
         size_t alnPos = 0;
         std::string alnSeq = read.getAlignedSequence();
         std::string cigar = read.getCigar();
+        std::vector<int> qual = read.getQuality();
         for (size_t i = 0; i < cigar.size(); i++) {
             switch (cigar[i]) {
                 case 'M':
