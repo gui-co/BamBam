@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 
 Transcript::Transcript(const std::string &sequenceName, StrandPolarity polarity,
                        int startPosition)
@@ -103,27 +104,33 @@ int Transcript::exportToFile(std::ofstream &file) {
         return -1;
     }
 
+    file << std::fixed << std::setprecision(5);
+
     size_t i = startPosition;
     auto itReads = reads.begin();
     auto itMatches = matches.begin();
     auto itMismatches = mismatches.begin();
     auto itInsertions = insertions.begin();
     auto itDeletions = deletions.begin();
+    auto itQuality = quality.begin();
     while ((itReads != reads.end()) && (itMatches != matches.end())
             && (itMismatches != mismatches.end()) && (itInsertions != insertions.end())
             && (itDeletions != deletions.end())) {
-        file << sequenceName  << " "
-             << i+1           << " "
-             << (int) *itReads      << " "
-             << (int) *itMatches    << " "
-             << (int) *itMismatches << " "
-             << (int) *itInsertions << " "
-             << (int) *itDeletions  << " " << std::endl;
+        if (*itReads) {
+            file << sequenceName << " "
+                 << i+1
+                 << std::setw(4)  << *itReads
+                 << std::setw(10) << (double) *itQuality / *itReads
+                 << std::setw(10) << (double) *itMismatches / *itReads
+                 << std::setw(10) << (double) *itInsertions / *itReads
+                 << std::setw(10) << (double) *itDeletions / *itReads << std::endl;
+        }
         itReads++;
         itMatches++;
         itMismatches++;
         itInsertions++;
         itDeletions++;
+        itQuality++;
         i++;
     }
 
