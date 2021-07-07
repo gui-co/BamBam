@@ -106,7 +106,6 @@ void Analyzer::analyze(void) {
                     refPos++;
                     break;
                 case 'N':
-                    transcript->addDeletion(refPos);
                     refPos++;
                     break;
                 case 'S':
