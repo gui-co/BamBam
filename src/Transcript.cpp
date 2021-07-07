@@ -81,6 +81,7 @@ void Transcript::addInsertion(size_t index) {
 
 void Transcript::addDeletion(size_t index) {
     advance(index);
+    (*currentPositionReads)++;
     (*currentPositionDeletions)++;
 }
 
