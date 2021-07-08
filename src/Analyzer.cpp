@@ -38,6 +38,7 @@ void Analyzer::analyze(void) {
         if (refSeq == "") {
             std::cout << "[ERROR] sequence \"" << sequenceName << "\" not "
                          "found in fasta file" << std::endl;
+            read = bamReader->getNextRead();
             continue;
         }
 
