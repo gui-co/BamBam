@@ -12,8 +12,9 @@ set(src src/Analyzer.cpp
 include_directories(inc)
 
 find_package(ZLIB REQUIRED)
+find_package(Threads REQUIRED)
 
 add_executable(bamAnalyzer ${src})
 
-target_link_libraries(bamAnalyzer z)
+target_link_libraries(bamAnalyzer z Threads::Threads)
 

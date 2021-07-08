@@ -61,8 +61,13 @@ void Analyzer::analyze(void) {
         if (sequenceIt == results.end()) {
             results[sequenceName] = new Sequence(sequenceName, refSeq);
             std::cout << "create new sequence " << sequenceName << std::endl;
-            if (!lastSequence.empty())
-                results.find(lastSequence)->second->exportToFile("./");
+            if (!lastSequence.empty()) {
+                {
+                    std::lock_guard<std::mutex> lock(queueMutex);
+                    sequencesReady.push(lastSequence);
+                }
+                queueNotEmpty.notify_one();
+            }
             lastSequence = sequenceName;
         }
 
@@ -119,6 +124,15 @@ void Analyzer::analyze(void) {
 
         read = bamReader->getNextRead();
     }
+}
+
+std::string Analyzer::getLastSequenceName(void) {
+    std::unique_lock<std::mutex> lock(queueMutex);
+    while (sequencesReady.empty())
+        queueNotEmpty.wait(lock);
+    std::string sequenceName = sequencesReady.front();
+    sequencesReady.pop();
+    return sequenceName;
 }
 
 Sequence *Analyzer::getSequence(const std::string &sequenceName) {
