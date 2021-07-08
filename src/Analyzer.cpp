@@ -121,3 +121,20 @@ void Analyzer::analyze(void) {
     }
 }
 
+Sequence *Analyzer::getSequence(const std::string &sequenceName) {
+    auto sequenceIt = results.find(sequenceName);
+    if (sequenceIt == results.end())
+        return nullptr;
+    else
+        return sequenceIt->second;
+}
+
+void Analyzer::deleteSequence(const std::string &sequenceName) {
+    auto sequenceIt = results.find(sequenceName);
+    if (sequenceIt != results.end()) {
+        delete sequenceIt->second;
+        sequenceIt->second = nullptr;
+        results.erase(sequenceIt);
+    }
+}
+

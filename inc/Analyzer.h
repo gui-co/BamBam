@@ -15,6 +15,8 @@ public:
     void setFastaReader(FastaReader *reader);
     void setBamReader(BamReader *reader);
     void analyze(void);
+    Sequence *getSequence(const std::string &sequenceName);
+    void deleteSequence(const std::string &sequenceName);
 
 private:
     FastaReader *fastaReader;
