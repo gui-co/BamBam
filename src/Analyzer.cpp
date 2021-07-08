@@ -6,11 +6,9 @@
 #include <iostream>
 
 Analyzer::~Analyzer(void) {
-    for (auto i = results.begin(); i != results.end(); i++) {
-        for (auto j = i->second.begin(); j != i->second.end(); j++) {
-            delete *j;
-            *j = nullptr;
-        }
+    for (auto it = results.begin(); it != results.end(); it++) {
+        delete it->second;
+        it->second = nullptr;
     }
 }
 
@@ -58,8 +56,18 @@ void Analyzer::analyze(void) {
         }
         size_t readStartPosition = read.getStartPosition();
 
-        Transcript *transcript = findTranscript(sequenceName, polarity,
-                                                readStartPosition);
+        auto sequenceIt = results.find(sequenceName);
+        if (sequenceIt == results.end()) {
+            results[sequenceName] = new Sequence(sequenceName, refSeq);
+            std::cout << "create new sequence " << sequenceName << std::endl;
+            if (!lastSequence.empty())
+                results.find(lastSequence)->second->exportToFile("./");
+            lastSequence = sequenceName;
+        }
+
+        Sequence *sequence = (results.find(sequenceName))->second;
+        Transcript *transcript = sequence->getTranscript(polarity,
+                                                         readStartPosition);
 
         size_t refPos = readStartPosition;
         size_t alnPos = 0;
@@ -110,32 +118,5 @@ void Analyzer::analyze(void) {
 
         read = bamReader->getNextRead();
     }
-}
-
-Transcript *Analyzer::findTranscript(std::string sequenceName,
-                                     Transcript::StrandPolarity polarity,
-                                     size_t pos) {
-    Transcript *transcript = nullptr;
-
-    // Try to find the corresponding transcript
-    auto sequenceIt = results.find(sequenceName);
-    if (sequenceIt != results.end()) {
-        auto transcriptIt = sequenceIt->second.begin();
-        while ((!transcript) && (transcriptIt != sequenceIt->second.end())) {
-            if ((*transcriptIt)->isReadInside(pos, polarity))
-                transcript = *transcriptIt;
-            transcriptIt++;
-        }
-    }
-    // Create a new one if not found
-    if (!transcript) {
-        transcript = new Transcript(sequenceName, polarity, pos);
-        if (sequenceIt == results.end()) {
-            results[sequenceName] = std::list<Transcript*>();
-        }
-        sequenceIt = results.find(sequenceName);
-        sequenceIt->second.push_back(transcript);
-    }
-    return transcript;
 }
 

@@ -2,7 +2,7 @@
 
 #include "FastaReader.h"
 #include "BamReader.h"
-#include "Transcript.h"
+#include "Sequence.h"
 
 #include <map>
 #include <string>
@@ -19,9 +19,8 @@ public:
 private:
     FastaReader *fastaReader;
     BamReader *bamReader;
-    std::map<std::string, std::list<Transcript*> > results;
-    Transcript *findTranscript(std::string sequenceName,
-                               Transcript::StrandPolarity polarity, size_t pos);
+    std::map<std::string, Sequence*> results;
+    std::string lastSequence;
 
 };
 
