@@ -6,6 +6,7 @@ set(src src/Analyzer.cpp
         src/BamReader.cpp
         src/BamRead.cpp
         src/FastaReader.cpp
+        src/Sequence.cpp
         src/Transcript.cpp
         src/main.cpp)
 include_directories(inc)
