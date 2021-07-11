@@ -15,7 +15,6 @@ public:
     Transcript(const std::string &SequenceName, StrandPolarity polarity,
                int startPosition);
     bool isReadInside(size_t position, StrandPolarity polarity);
-    void addRead(size_t position, size_t length);
     void addMatch(size_t position, uint16_t quality);
     void addMismatch(size_t position, uint16_t quality);
     void addInsertion(size_t position);

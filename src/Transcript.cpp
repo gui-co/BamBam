@@ -25,24 +25,6 @@ bool Transcript::isReadInside(size_t position, StrandPolarity polarity) {
             && (position < startPosition + length));
 }
 
-void Transcript::addRead(size_t position, size_t length) {
-    size_t end1 = startPosition + this->length;
-    size_t end2 = position + length;
-    if (end2 < end1)
-        return;
-
-    size_t back = end2 - end1;
-    // ssize_t back = (position + length) - (startPosition + this->length);
-
-    reads.insert(reads.end(), back, 0);
-    matches.insert(matches.end(), back, 0);
-    mismatches.insert(mismatches.end(), back, 0);
-    insertions.insert(insertions.end(), back, 0);
-    deletions.insert(deletions.end(), back, 0);
-    quality.insert(quality.end(), back, 0);
-    this->length += back;
-}
-
 void Transcript::advance(size_t index) {
     if (index < startPosition)
         abort();
