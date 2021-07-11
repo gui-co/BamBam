@@ -1,6 +1,7 @@
 #include "FastaReader.h"
 #include "BamReader.h"
 #include "Analyzer.h"
+#include "Exporter.h"
 
 #include <unistd.h>
 
@@ -69,7 +70,13 @@ int main(int argc,  char** argv) {
     analyzer.setFastaReader(&fastaReader);
     analyzer.setBamReader(&bamReader);
 
+    Exporter exporter;
+    exporter.setAnalyzer(&analyzer);
+    exporter.run();
+
     analyzer.analyze();
+
+    exporter.wait();
 
     return 0;
 }

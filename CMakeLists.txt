@@ -5,6 +5,7 @@ project(bamAnalyzer)
 set(src src/Analyzer.cpp
         src/BamReader.cpp
         src/BamRead.cpp
+        src/Exporter.cpp
         src/FastaReader.cpp
         src/Sequence.cpp
         src/Transcript.cpp
