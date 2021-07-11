@@ -46,16 +46,3 @@ std::list<Transcript*>::iterator Sequence::end(void) {
     return transcripts.end();
 }
 
-void Sequence::exportToFile(const std::string &directory) {
-    std::cout << "Exporting " << transcripts.size() << " transcripts from "
-              << "sequence " << name << std::endl;
-    std::ofstream filePlus(directory + name + "_plus.data");
-    std::ofstream fileMinus(directory + name +"_minus.data");
-    for (auto it = transcripts.begin(); it != transcripts.end(); it++) {
-        if ((*it)->isPlus())
-            (*it)->exportToFile(filePlus);
-        else
-            (*it)->exportToFile(fileMinus);
-    }
-}
-
