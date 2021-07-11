@@ -16,6 +16,10 @@ Sequence::~Sequence(void) {
     }
 }
 
+std::string Sequence::getName(void) {
+    return name;
+}
+
 Transcript *Sequence::getTranscript(Transcript::StrandPolarity polarity,
                                    size_t startPosition) {
     Transcript *transcript = nullptr;
