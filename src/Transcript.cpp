@@ -63,36 +63,3 @@ std::list<Base>::iterator Transcript::end(void) {
     return data.end();
 }
 
-int Transcript::exportToFile(std::ofstream &file) {
-    if (!file.is_open()) {
-        std::cout << "[ERROR] unable to export analysis of sequence \"" 
-                  << sequenceName << "\"" << std::endl;
-        return -1;
-    }
-
-    file << std::fixed << std::setprecision(5);
-
-    size_t i = startPosition;
-    auto it = data.begin();
-    while (it != data.end()) {
-        if ((*it).getReads() != 0) {
-            file << sequenceName << " "
-                 << i+1
-                 << std::setw(4)  << (*it).getReads()
-                 << std::setw(10) << (double) (*it).getQuality()
-                    / ((*it).getMatches() + (*it).getMismatches())
-                 << std::setw(10) << (double) (*it).getMismatches()
-                    / (*it).getReads()
-                 << std::setw(10) << (double) (*it).getInsertions()
-                    / (*it).getReads()
-                 << std::setw(10) << (double) (*it).getDeletions()
-                    / (*it).getReads()
-                 << std::endl;
-        }
-        it++;
-        i++;
-    }
-
-    return 0;
-}
-

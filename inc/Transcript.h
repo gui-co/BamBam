@@ -24,7 +24,6 @@ public:
     bool isPlus(void);
     std::list<Base>::iterator begin(void);
     std::list<Base>::iterator end(void);
-    int exportToFile(std::ofstream &file);
     size_t startPosition;
     size_t length;
 

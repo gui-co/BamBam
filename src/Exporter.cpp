@@ -1,6 +1,7 @@
 #include "Exporter.h"
 
 #include <string>
+#include <iomanip>
 
 void Exporter::setAnalyzer(Analyzer *analyzer) {
     bamAnalyzer = analyzer;
@@ -20,14 +21,40 @@ void Exporter::exportTranscripts(void) {
         std::string sequenceName = bamAnalyzer->getLastSequenceName();
         if (sequenceName.empty())
             break;
+
         Sequence *sequence = bamAnalyzer->getSequence(sequenceName);
-        std::ofstream filePlus(directory + sequence->getName() + "_plus.data");
-        std::ofstream fileMinus(directory + sequence->getName() +"_minus.data");
-        for (auto it = sequence->begin(); it != sequence->end(); it++) {
-            if ((*it)->isPlus())
-                (*it)->exportToFile(filePlus);
+        std::ofstream filePlus(directory + sequenceName + "_plus.data");
+        std::ofstream fileMinus(directory + sequenceName +"_minus.data");
+        filePlus << std::fixed << std::setprecision(5);
+        fileMinus << std::fixed << std::setprecision(5);
+
+        auto transcriptIt = sequence->begin();
+        while (transcriptIt != sequence->end()) {
+            Transcript *transcript = (*transcriptIt);
+            std::ofstream *file;
+            if ((*transcriptIt)->isPlus())
+                file = &filePlus;
             else
-                (*it)->exportToFile(fileMinus);
+                file = &fileMinus;
+
+            size_t position = transcript->startPosition + 1;
+            auto baseIt = transcript->begin();
+            while (baseIt != transcript->end()) {
+                Base &base = *baseIt;
+                *file << sequenceName << " "
+                      << position
+                      << std::setw(4) << base.getReads()
+                      << std::setw(10) << (double) base.getQuality()
+                         / (base.getMatches() + base.getMismatches())
+                      << std::setw(10) << (double) base.getMismatches()
+                         / base.getReads()
+                      << std::setw(10) << (double) base.getInsertions()
+                         / base.getReads()
+                      << std::endl;
+                baseIt++;
+                position++;
+            }
+            transcriptIt++;
         }
     }
 }
