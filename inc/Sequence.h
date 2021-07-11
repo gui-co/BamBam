@@ -12,6 +12,8 @@ public:
     ~Sequence(void);
     Transcript *getTranscript(Transcript::StrandPolarity polarity,
                               size_t position);
+    std::list<Transcript*>::iterator begin(void);
+    std::list<Transcript*>::iterator end(void);
     void exportToFile(const std::string &directory);
 
 private:

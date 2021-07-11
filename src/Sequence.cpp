@@ -34,6 +34,14 @@ Transcript *Sequence::getTranscript(Transcript::StrandPolarity polarity,
     return transcript;
 }
 
+std::list<Transcript*>::iterator Sequence::begin(void) {
+    return transcripts.begin();
+}
+
+std::list<Transcript*>::iterator Sequence::end(void) {
+    return transcripts.end();
+}
+
 void Sequence::exportToFile(const std::string &directory) {
     std::cout << "Exporting " << transcripts.size() << " transcripts from "
               << "sequence " << name << std::endl;
