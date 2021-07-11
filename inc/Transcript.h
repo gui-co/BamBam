@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Base.h"
+
 #include <string>
 #include <list>
 #include <fstream>
@@ -27,19 +29,9 @@ public:
 private:
     std::string sequenceName;
     StrandPolarity polarity;
-    std::list<uint16_t> reads;
-    std::list<uint16_t> matches;
-    std::list<uint16_t> mismatches;
-    std::list<uint16_t> insertions;
-    std::list<uint16_t> deletions;
-    std::list<uint16_t> quality;
+    std::list<Base> data;
     size_t currentIndex;
-    std::list<uint16_t>::iterator currentPositionReads;
-    std::list<uint16_t>::iterator currentPositionMatches;
-    std::list<uint16_t>::iterator currentPositionMismatches;
-    std::list<uint16_t>::iterator currentPositionInsertions;
-    std::list<uint16_t>::iterator currentPositionDeletions;
-    std::list<uint16_t>::iterator currentPositionQuality;
+    std::list<Base>::iterator currentPosition;
     void advance(size_t index);
 };
 

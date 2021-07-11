@@ -8,16 +8,9 @@ Transcript::Transcript(const std::string &sequenceName, StrandPolarity polarity,
                        int startPosition)
     : sequenceName(sequenceName), polarity(polarity),
       startPosition(startPosition), length(1),
-      currentIndex(startPosition), reads(1, 0), matches(1, 0),
-      mismatches(1, 0), insertions(1, 0),
-      deletions(1, 0), quality(1, 0)
+      currentIndex(startPosition), data(1)
 {
-    currentPositionReads = reads.begin();
-    currentPositionMatches = matches.begin();
-    currentPositionMismatches = mismatches.begin();
-    currentPositionInsertions = insertions.begin();
-    currentPositionDeletions = deletions.begin();
-    currentPositionQuality = quality.begin();
+    currentPosition = data.begin();
 }
 
 bool Transcript::isReadInside(size_t position, StrandPolarity polarity) {
@@ -28,50 +21,34 @@ bool Transcript::isReadInside(size_t position, StrandPolarity polarity) {
 void Transcript::advance(size_t index) {
     if (index < startPosition)
         abort();
-    if ((index - startPosition) >= reads.size()) {
-        size_t toBeAdded = index - startPosition - reads.size() + 1;
-        reads.insert(reads.end(), toBeAdded, 0);
-        matches.insert(matches.end(), toBeAdded, 0);
-        mismatches.insert(mismatches.end(), toBeAdded, 0);
-        deletions.insert(deletions.end(), toBeAdded, 0);
-        insertions.insert(insertions.end(), toBeAdded, 0);
-        quality.insert(quality.end(), toBeAdded, 0);
-        length = reads.size();
+    if ((index - startPosition) >= data.size()) {
+        size_t toBeAdded = index - startPosition - data.size() + 1;
+        data.insert(data.end(), toBeAdded, Base());
+        length = data.size();
     }
     ssize_t mov = (ssize_t) index - (ssize_t) currentIndex;
-    std::advance(currentPositionReads, mov);
-    std::advance(currentPositionMatches, mov);
-    std::advance(currentPositionMismatches, mov);
-    std::advance(currentPositionInsertions, mov);
-    std::advance(currentPositionDeletions, mov);
-    std::advance(currentPositionQuality, mov);
+    std::advance(currentPosition, mov);
     currentIndex = index;
 }
 
 void Transcript::addMatch(size_t index, uint16_t quality) {
     advance(index);
-    (*currentPositionReads)++;
-    (*currentPositionMatches)++;
-    (*currentPositionQuality) += quality;
+    (*currentPosition).addMatch(quality);
 }
 
 void Transcript::addMismatch(size_t index, uint16_t quality) {
     advance(index);
-    (*currentPositionReads)++;
-    (*currentPositionMismatches)++;
-    (*currentPositionQuality) += quality;
+    (*currentPosition).addMismatch(quality);
 }
 
 void Transcript::addInsertion(size_t index) {
     advance(index);
-    (*currentPositionInsertions)++;
-    // (*currentPositionQuality) += quality;
+    (*currentPosition).addInsertion();
 }
 
 void Transcript::addDeletion(size_t index) {
     advance(index);
-    (*currentPositionReads)++;
-    (*currentPositionDeletions)++;
+    (*currentPosition).addDeletion();
 }
 
 bool Transcript::isPlus(void) {
@@ -88,30 +65,23 @@ int Transcript::exportToFile(std::ofstream &file) {
     file << std::fixed << std::setprecision(5);
 
     size_t i = startPosition;
-    auto itReads = reads.begin();
-    auto itMatches = matches.begin();
-    auto itMismatches = mismatches.begin();
-    auto itInsertions = insertions.begin();
-    auto itDeletions = deletions.begin();
-    auto itQuality = quality.begin();
-    while ((itReads != reads.end()) && (itMatches != matches.end())
-            && (itMismatches != mismatches.end()) && (itInsertions != insertions.end())
-            && (itDeletions != deletions.end())) {
-        if (*itReads) {
+    auto it = data.begin();
+    while (it != data.end()) {
+        if ((*it).getReads() != 0) {
             file << sequenceName << " "
                  << i+1
-                 << std::setw(4)  << *itReads
-                 << std::setw(10) << (double) *itQuality / (*itMatches + *itMismatches)
-                 << std::setw(10) << (double) *itMismatches / *itReads
-                 << std::setw(10) << (double) *itInsertions / *itReads
-                 << std::setw(10) << (double) *itDeletions / *itReads << std::endl;
+                 << std::setw(4)  << (*it).getReads()
+                 << std::setw(10) << (double) (*it).getQuality()
+                    / ((*it).getMatches() + (*it).getMismatches())
+                 << std::setw(10) << (double) (*it).getMismatches()
+                    / (*it).getReads()
+                 << std::setw(10) << (double) (*it).getInsertions()
+                    / (*it).getReads()
+                 << std::setw(10) << (double) (*it).getDeletions()
+                    / (*it).getReads()
+                 << std::endl;
         }
-        itReads++;
-        itMatches++;
-        itMismatches++;
-        itInsertions++;
-        itDeletions++;
-        itQuality++;
+        it++;
         i++;
     }
 
