@@ -55,6 +55,14 @@ bool Transcript::isPlus(void) {
     return polarity == PLUS_STRAND;
 }
 
+std::list<Base>::iterator Transcript::begin(void) {
+    return data.begin();
+}
+
+std::list<Base>::iterator Transcript::end(void) {
+    return data.end();
+}
+
 int Transcript::exportToFile(std::ofstream &file) {
     if (!file.is_open()) {
         std::cout << "[ERROR] unable to export analysis of sequence \"" 
