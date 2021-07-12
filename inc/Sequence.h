@@ -15,6 +15,7 @@ public:
     std::string getName(void);
     std::list<Transcript*>::iterator begin(void);
     std::list<Transcript*>::iterator end(void);
+    size_t size(void);
 
 private:
     std::string name;

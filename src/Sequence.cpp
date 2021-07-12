@@ -46,3 +46,7 @@ std::list<Transcript*>::iterator Sequence::end(void) {
     return transcripts.end();
 }
 
+size_t Sequence::size(void) {
+    return transcripts.size();
+}
+
