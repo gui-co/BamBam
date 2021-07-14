@@ -8,9 +8,10 @@ Transcript::Transcript(const std::string &sequenceName, StrandPolarity polarity,
                        int startPosition)
     : sequenceName(sequenceName), polarity(polarity),
       startPosition(startPosition), length(1),
-      currentIndex(startPosition), data(1)
+      currentIndex(startPosition)
 {
-    currentPosition = data.begin();
+    resize(1);
+    currentPosition = begin();
 }
 
 bool Transcript::isReadInside(size_t position, StrandPolarity polarity) {
@@ -21,10 +22,10 @@ bool Transcript::isReadInside(size_t position, StrandPolarity polarity) {
 void Transcript::advance(size_t index) {
     if (index < startPosition)
         abort();
-    if ((index - startPosition) >= data.size()) {
-        size_t toBeAdded = index - startPosition - data.size() + 1;
-        data.insert(data.end(), toBeAdded, Base());
-        length = data.size();
+    if ((index - startPosition) >= size()) {
+        size_t toBeAdded = index - startPosition - size() + 1;
+        insert(end(), toBeAdded, Base());
+        length = size();
     }
     ssize_t mov = (ssize_t) index - (ssize_t) currentIndex;
     std::advance(currentPosition, mov);
@@ -53,13 +54,5 @@ void Transcript::addDeletion(size_t index) {
 
 bool Transcript::isPlus(void) {
     return polarity == PLUS_STRAND;
-}
-
-std::list<Base>::iterator Transcript::begin(void) {
-    return data.begin();
-}
-
-std::list<Base>::iterator Transcript::end(void) {
-    return data.end();
 }
 

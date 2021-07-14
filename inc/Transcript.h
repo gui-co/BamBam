@@ -6,7 +6,7 @@
 #include <list>
 #include <fstream>
 
-class Transcript {
+class Transcript : public std::list<Base> {
 
 public:
     enum StrandPolarity {
@@ -22,15 +22,12 @@ public:
     void addInsertion(size_t position);
     void addDeletion(size_t position);
     bool isPlus(void);
-    std::list<Base>::iterator begin(void);
-    std::list<Base>::iterator end(void);
     size_t startPosition;
     size_t length;
 
 private:
     std::string sequenceName;
     StrandPolarity polarity;
-    std::list<Base> data;
     size_t currentIndex;
     std::list<Base>::iterator currentPosition;
     void advance(size_t index);
