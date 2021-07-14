@@ -23,14 +23,21 @@ void Exporter::exportTranscripts(void) {
             break;
 
         Sequence *sequence = bamAnalyzer->getSequence(sequenceName);
+        std::ofstream fileLog(directory + sequenceName + ".data");
         std::ofstream filePlus(directory + sequenceName + "_plus.data");
         std::ofstream fileMinus(directory + sequenceName +"_minus.data");
         filePlus << std::fixed << std::setprecision(5);
         fileMinus << std::fixed << std::setprecision(5);
 
+        fileLog << "# " << sequenceName << " "
+                << sequence->size() << " transcripts" << std::endl;
         auto transcriptIt = sequence->begin();
         while (transcriptIt != sequence->end()) {
             Transcript *transcript = (*transcriptIt);
+            fileLog << transcript->startPosition + 1 << " "
+                    << transcript->startPosition + 1 + transcript->length
+                    << std::endl;
+
             std::ofstream *file;
             if ((*transcriptIt)->isPlus())
                 file = &filePlus;
