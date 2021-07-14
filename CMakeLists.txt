@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 set(CMAKE_CXX_STANDARD 11)
-project(bamAnalyzer)
+project(bambam)
 
 set(src src/Analyzer.cpp
         src/BamReader.cpp
@@ -16,7 +16,7 @@ include_directories(inc)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
 
-add_executable(bamAnalyzer ${src})
+add_executable(bambam ${src})
 
-target_link_libraries(bamAnalyzer z Threads::Threads)
+target_link_libraries(bambam z Threads::Threads)
 
