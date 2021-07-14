@@ -51,6 +51,10 @@ void Exporter::exportTranscripts(void) {
             auto baseIt = transcript.begin();
             while (baseIt != transcript.end()) {
                 Base &base = *baseIt;
+                if (base.getReads() == 0) {
+                    baseIt++;
+                    continue;
+                }
                 *file << sequenceName << " "
                       << position
                       << std::setw(4) << base.getReads()
