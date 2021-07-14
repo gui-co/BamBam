@@ -18,11 +18,8 @@ void Exporter::wait(void) {
 void Exporter::exportTranscripts(void) {
     std::string directory = "./";
     while (true) {
-        std::string sequenceName = bamAnalyzer->getLastSequenceName();
-        if (sequenceName.empty())
-            break;
-
-        Sequence *sequence = bamAnalyzer->getSequence(sequenceName);
+        Sequence sequence = bamAnalyzer->takeLastSequence();
+        std::string sequenceName = sequence.getName();
         std::ofstream fileLog(directory + sequenceName + ".data");
         std::ofstream filePlus(directory + sequenceName + "_plus.data");
         std::ofstream fileMinus(directory + sequenceName +"_minus.data");
@@ -30,23 +27,23 @@ void Exporter::exportTranscripts(void) {
         fileMinus << std::fixed << std::setprecision(5);
 
         fileLog << "# " << sequenceName << " "
-                << sequence->size() << " transcripts" << std::endl;
-        auto transcriptIt = sequence->begin();
-        while (transcriptIt != sequence->end()) {
-            Transcript *transcript = (*transcriptIt);
-            fileLog << transcript->startPosition + 1 << " "
-                    << transcript->startPosition + 1 + transcript->length
+                << sequence.size() << " transcripts" << std::endl;
+        auto transcriptIt = sequence.begin();
+        while (transcriptIt != sequence.end()) {
+            Transcript &transcript = (*transcriptIt);
+            fileLog << transcript.startPosition + 1 << " "
+                    << transcript.startPosition + 1 + transcript.length
                     << std::endl;
 
             std::ofstream *file;
-            if ((*transcriptIt)->isPlus())
+            if (transcript.isPlus())
                 file = &filePlus;
             else
                 file = &fileMinus;
 
-            size_t position = transcript->startPosition + 1;
-            auto baseIt = transcript->begin();
-            while (baseIt != transcript->end()) {
+            size_t position = transcript.startPosition + 1;
+            auto baseIt = transcript.begin();
+            while (baseIt != transcript.end()) {
                 Base &base = *baseIt;
                 *file << sequenceName << " "
                       << position
@@ -63,9 +60,6 @@ void Exporter::exportTranscripts(void) {
             }
             transcriptIt++;
         }
-
-        // release some memory
-        bamAnalyzer-> deleteSequence(sequenceName);
     }
 }
 
