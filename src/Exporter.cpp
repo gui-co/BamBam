@@ -63,6 +63,9 @@ void Exporter::exportTranscripts(void) {
             }
             transcriptIt++;
         }
+
+        // release some memory
+        bamAnalyzer-> deleteSequence(sequenceName);
     }
 }
 
