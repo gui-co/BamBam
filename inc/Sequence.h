@@ -13,6 +13,8 @@ public:
     ~Sequence(void);
     Transcript *getTranscript(Transcript::StrandPolarity polarity,
                               size_t position);
+    Sequence(Sequence &&sequence) = default;
+    Sequence &operator=(Sequence &&rhs) = default;
     std::string getName(void);
 
 private:
