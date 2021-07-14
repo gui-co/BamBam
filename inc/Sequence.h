@@ -8,6 +8,7 @@
 class Sequence : public std::list<Transcript*> {
 
 public:
+    Sequence(void) = default;
     Sequence(const std::string &sequenceName, const std::string &sequence);
     ~Sequence(void);
     Transcript *getTranscript(Transcript::StrandPolarity polarity,
