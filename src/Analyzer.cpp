@@ -113,6 +113,14 @@ void Analyzer::analyze(void) {
 
         read = bamReader->getNextRead();
     }
+
+    // push empty sequence when done
+    {
+        std::lock_guard<std::mutex> lock(queueMutex);
+        sequencesReady.push(Sequence(std::move(currentSequence)));
+    }
+    queueNotEmpty.notify_one();
+    currentSequence = Sequence();
 }
 
 Sequence Analyzer::takeLastSequence(void) {

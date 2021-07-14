@@ -20,6 +20,9 @@ void Exporter::exportTranscripts(void) {
     while (true) {
         Sequence sequence = bamAnalyzer->takeLastSequence();
         std::string sequenceName = sequence.getName();
+        if (sequenceName.empty())
+            break;
+
         std::ofstream fileLog(directory + sequenceName + ".data");
         std::ofstream filePlus(directory + sequenceName + "_plus.data");
         std::ofstream fileMinus(directory + sequenceName +"_minus.data");
