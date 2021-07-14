@@ -5,13 +5,6 @@
 
 #include <iostream>
 
-Analyzer::~Analyzer(void) {
-    for (auto it = results.begin(); it != results.end(); it++) {
-        delete it->second;
-        it->second = nullptr;
-    }
-}
-
 void Analyzer::setFastaReader(FastaReader *reader) {
     fastaReader = reader;
 }
@@ -57,23 +50,19 @@ void Analyzer::analyze(void) {
         }
         size_t readStartPosition = read.getStartPosition();
 
-        auto sequenceIt = results.find(sequenceName);
-        if (sequenceIt == results.end()) {
-            results[sequenceName] = new Sequence(sequenceName, refSeq);
-            std::cout << "create new sequence " << sequenceName << std::endl;
-            if (!lastSequence.empty()) {
-                {
-                    std::lock_guard<std::mutex> lock(queueMutex);
-                    sequencesReady.push(lastSequence);
-                }
-                queueNotEmpty.notify_one();
+        if (currentSequence.getName() == "") {
+            currentSequence = Sequence(sequenceName, refSeq);
+        } else if (currentSequence.getName() != sequenceName) {
+            {
+                std::lock_guard<std::mutex> lock(queueMutex);
+                sequencesReady.push(Sequence(std::move(currentSequence)));
             }
-            lastSequence = sequenceName;
+            queueNotEmpty.notify_one();
+            currentSequence = Sequence(sequenceName, refSeq);
         }
 
-        Sequence *sequence = (results.find(sequenceName))->second;
-        Transcript *transcript = sequence->getTranscript(polarity,
-                                                         readStartPosition);
+        Transcript &transcript = currentSequence.getTranscript(
+                polarity, readStartPosition);
 
         size_t refPos = readStartPosition;
         size_t alnPos = 0;
@@ -84,19 +73,19 @@ void Analyzer::analyze(void) {
             switch (cigar[i]) {
                 case 'M':
                     if (alnSeq[alnPos] == refSeq[refPos]) {
-                        transcript->addMatch(refPos, qual[alnPos]);
+                        transcript.addMatch(refPos, qual[alnPos]);
                     } else {
-                        transcript->addMismatch(refPos, qual[alnPos]);
+                        transcript.addMismatch(refPos, qual[alnPos]);
                     }
                     refPos++;
                     alnPos++;
                     break;
                 case 'I':
-                    transcript->addInsertion(refPos);
+                    transcript.addInsertion(refPos);
                     alnPos++;
                     break;
                 case 'D':
-                    transcript->addDeletion(refPos);
+                    transcript.addDeletion(refPos);
                     refPos++;
                     break;
                 case 'N':
@@ -110,12 +99,12 @@ void Analyzer::analyze(void) {
                 case 'P':
                     break;
                 case '=':
-                    transcript->addMatch(refPos, qual[alnPos]);
+                    transcript.addMatch(refPos, qual[alnPos]);
                     refPos++;
                     alnPos++;
                     break;
                 case 'X':
-                    transcript->addMismatch(refPos, qual[alnPos]);
+                    transcript.addMismatch(refPos, qual[alnPos]);
                     refPos++;
                     alnPos++;
                     break;
@@ -126,29 +115,12 @@ void Analyzer::analyze(void) {
     }
 }
 
-std::string Analyzer::getLastSequenceName(void) {
+Sequence Analyzer::takeLastSequence(void) {
     std::unique_lock<std::mutex> lock(queueMutex);
     while (sequencesReady.empty())
         queueNotEmpty.wait(lock);
-    std::string sequenceName = sequencesReady.front();
+    Sequence sequence = std::move(sequencesReady.front());
     sequencesReady.pop();
-    return sequenceName;
-}
-
-Sequence *Analyzer::getSequence(const std::string &sequenceName) {
-    auto sequenceIt = results.find(sequenceName);
-    if (sequenceIt == results.end())
-        return nullptr;
-    else
-        return sequenceIt->second;
-}
-
-void Analyzer::deleteSequence(const std::string &sequenceName) {
-    auto sequenceIt = results.find(sequenceName);
-    if (sequenceIt != results.end()) {
-        delete sequenceIt->second;
-        sequenceIt->second = nullptr;
-        results.erase(sequenceIt);
-    }
+    return sequence;
 }
 

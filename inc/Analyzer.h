@@ -14,20 +14,16 @@
 class Analyzer {
 
 public:
-    ~Analyzer(void);
     void setFastaReader(FastaReader *reader);
     void setBamReader(BamReader *reader);
     void analyze(void);
-    std::string getLastSequenceName(void);
-    Sequence *getSequence(const std::string &sequenceName);
-    void deleteSequence(const std::string &sequenceName);
+    Sequence takeLastSequence(void);
 
 private:
+    Sequence currentSequence;
     FastaReader *fastaReader;
     BamReader *bamReader;
-    std::map<std::string, Sequence*> results;
-    std::string lastSequence;
-    std::queue<std::string> sequencesReady;
+    std::queue<Sequence> sequencesReady;
     std::mutex queueMutex;
     std::condition_variable queueNotEmpty;
 
