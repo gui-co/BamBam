@@ -4,6 +4,33 @@
 #include <iostream>
 #include <iomanip>
 
+int Exporter::setExportDirectory(const std::string &directory) {
+    using namespace std::filesystem;
+    if (directory.empty())
+        saveDirectory = current_path();
+    else
+        saveDirectory = path(directory);
+
+    if (exists(saveDirectory) && is_directory(saveDirectory))
+        return 0;
+
+    if (exists(saveDirectory)) {
+        std::cout << "[ERROR] \"" << directory << "\" is not a directory"
+                  << std::endl;
+        return -1;
+    }
+
+    if (!create_directory(saveDirectory)) {
+        std::cout << "[ERROR] \"" << directory << "\" does not exist and it is "
+                  << "not possible to create it" << std::endl;
+        return -1;
+    } else {
+        std::cout << "[INFO] Export directory \"" << directory << "\" was "
+                  << "created" << std::endl;
+        return 1;
+    }
+}
+
 void Exporter::setAnalyzer(Analyzer *analyzer) {
     bamAnalyzer = analyzer;
 }
@@ -17,7 +44,7 @@ void Exporter::wait(void) {
 }
 
 void Exporter::exportTranscripts(void) {
-    std::string directory = "./";
+    using std::filesystem::path;
     while (true) {
         Sequence sequence = bamAnalyzer->takeLastSequence();
         std::string sequenceName = sequence.getName();
@@ -26,9 +53,11 @@ void Exporter::exportTranscripts(void) {
         else
             std::cout << "Export of " << sequenceName << std::endl;
 
-        std::ofstream fileLog(directory + sequenceName + ".data");
-        std::ofstream filePlus(directory + sequenceName + "_plus.data");
-        std::ofstream fileMinus(directory + sequenceName +"_minus.data");
+        std::ofstream fileLog(saveDirectory / path(sequenceName + ".data"));
+        std::ofstream filePlus(saveDirectory
+                               / path(sequenceName + "_plus.data"));
+        std::ofstream fileMinus(saveDirectory
+                                / path(sequenceName +"_minus.data"));
         filePlus << std::fixed << std::setprecision(5);
         fileMinus << std::fixed << std::setprecision(5);
 

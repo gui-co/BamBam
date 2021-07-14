@@ -71,6 +71,7 @@ int main(int argc,  char** argv) {
     analyzer.setBamReader(&bamReader);
 
     Exporter exporter;
+    exporter.setExportDirectory(outputDirectory);
     exporter.setAnalyzer(&analyzer);
     exporter.run();
 
