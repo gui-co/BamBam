@@ -10,7 +10,7 @@ Sequence::Sequence(const std::string &sequenceName, const std::string &sequence)
 }
 
 Sequence::~Sequence(void) {
-    for (auto it = transcripts.begin(); it != transcripts.end(); it++) {
+    for (auto it = begin(); it != end(); it++) {
         delete *it;
         *it = nullptr;
     }
@@ -23,8 +23,8 @@ std::string Sequence::getName(void) {
 Transcript *Sequence::getTranscript(Transcript::StrandPolarity polarity,
                                    size_t startPosition) {
     Transcript *transcript = nullptr;
-    auto transcriptIt = transcripts.begin();
-    while ((!transcript) && (transcriptIt != transcripts.end())) {
+    auto transcriptIt = begin();
+    while ((!transcript) && (transcriptIt != end())) {
         if ((*transcriptIt)->isReadInside(startPosition, polarity))
             transcript = (*transcriptIt);
         transcriptIt++;
@@ -33,20 +33,8 @@ Transcript *Sequence::getTranscript(Transcript::StrandPolarity polarity,
         std::cout << "Creation of a new transcript starting at "
                   << startPosition << std::endl;
         transcript = new Transcript(name, polarity, startPosition);
-        transcripts.push_back(transcript);
+        push_back(transcript);
     }
     return transcript;
-}
-
-std::list<Transcript*>::iterator Sequence::begin(void) {
-    return transcripts.begin();
-}
-
-std::list<Transcript*>::iterator Sequence::end(void) {
-    return transcripts.end();
-}
-
-size_t Sequence::size(void) {
-    return transcripts.size();
 }
 
