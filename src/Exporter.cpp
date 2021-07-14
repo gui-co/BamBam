@@ -1,6 +1,7 @@
 #include "Exporter.h"
 
 #include <string>
+#include <iostream>
 #include <iomanip>
 
 void Exporter::setAnalyzer(Analyzer *analyzer) {
@@ -22,6 +23,8 @@ void Exporter::exportTranscripts(void) {
         std::string sequenceName = sequence.getName();
         if (sequenceName.empty())
             break;
+        else
+            std::cout << "Export of " << sequenceName << std::endl;
 
         std::ofstream fileLog(directory + sequenceName + ".data");
         std::ofstream filePlus(directory + sequenceName + "_plus.data");
