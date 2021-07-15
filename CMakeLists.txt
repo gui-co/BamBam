@@ -18,5 +18,5 @@ find_package(Threads REQUIRED)
 
 add_executable(bambam ${src})
 
-target_link_libraries(bambam z Threads::Threads)
+target_link_libraries(bambam z Threads::Threads stdc++fs)
 
