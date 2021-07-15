@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Analyzer.h"
+#include "filesystem.h"
 
 #include <thread>
-#include <filesystem>
 #include <string>
 
 class Exporter {
@@ -18,6 +18,6 @@ private:
     void exportTranscripts(void);
     Analyzer *bamAnalyzer;
     std::thread exporterThread;
-    std::filesystem::path saveDirectory;
+    fs::path saveDirectory;
 };
 

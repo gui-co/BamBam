@@ -5,22 +5,21 @@
 #include <iomanip>
 
 int Exporter::setExportDirectory(const std::string &directory) {
-    using namespace std::filesystem;
     if (directory.empty())
-        saveDirectory = current_path();
+        saveDirectory = fs::current_path();
     else
-        saveDirectory = path(directory);
+        saveDirectory = fs::path(directory);
 
-    if (exists(saveDirectory) && is_directory(saveDirectory))
+    if (fs::exists(saveDirectory) && fs::is_directory(saveDirectory))
         return 0;
 
-    if (exists(saveDirectory)) {
+    if (fs::exists(saveDirectory)) {
         std::cout << "[ERROR] \"" << directory << "\" is not a directory"
                   << std::endl;
         return -1;
     }
 
-    if (!create_directory(saveDirectory)) {
+    if (!fs::create_directory(saveDirectory)) {
         std::cout << "[ERROR] \"" << directory << "\" does not exist and it is "
                   << "not possible to create it" << std::endl;
         return -1;
@@ -44,16 +43,15 @@ void Exporter::wait(void) {
 }
 
 void Exporter::exportTranscripts(void) {
-    using std::filesystem::path;
     while (true) {
         Sequence sequence = bamAnalyzer->takeLastSequence();
         std::string sequenceName = sequence.getName();
         if (sequenceName.empty())
             break;
 
-        path logFilename = path(sequenceName + ".data");
-        path plusFilename = path(sequenceName + "_plus.data");
-        path minusFilename = path(sequenceName +"_minus.data");
+        fs::path logFilename = fs::path(sequenceName + ".data");
+        fs::path plusFilename = fs::path(sequenceName + "_plus.data");
+        fs::path minusFilename = fs::path(sequenceName +"_minus.data");
         std::ofstream fileLog(saveDirectory / logFilename);
         std::ofstream filePlus(saveDirectory / plusFilename);
         std::ofstream fileMinus(saveDirectory / minusFilename);
