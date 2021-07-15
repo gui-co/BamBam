@@ -73,6 +73,10 @@ void BamReader::read(void) {
         r = readBam(reinterpret_cast<char*>(&blockSize), size);
         if (r != size) {
             // end of file
+            if (readsReady.size() >= 20) {
+                std::unique_lock<std::mutex> lock(queueMutex);
+                queueNotFull.wait(lock);
+            }
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 readsReady.push(BamRead());
@@ -87,6 +91,10 @@ void BamReader::read(void) {
         if (r != blockSize) {
             std::cout << "[ERROR] alignment block is corrupted in BAM file"
                       << std::endl;
+            if (readsReady.size() >= 20) {
+                std::unique_lock<std::mutex> lock(queueMutex);
+                queueNotFull.wait(lock);
+            }
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 readsReady.push(BamRead());
@@ -99,6 +107,10 @@ void BamReader::read(void) {
         read.initFromBamBlock(block, blockSize);
         read.setSequenceName(sequences);
         delete[] block;
+        if (readsReady.size() >= 20) {
+            std::unique_lock<std::mutex> lock(queueMutex);
+            queueNotFull.wait(lock);
+        }
         {
             std::lock_guard<std::mutex> lock(queueMutex);
             readsReady.push(std::move(read));
@@ -139,11 +151,15 @@ BamRead BamReader::getNextRead(void) {
 }
 
 BamRead BamReader::takeNextRead(void) {
-    std::unique_lock<std::mutex> lock(queueMutex);
-    while (readsReady.empty())
-        queueNotEmpty.wait(lock);
-    BamRead read = std::move(readsReady.front());
-    readsReady.pop();
+    BamRead read;
+    {
+        std::unique_lock<std::mutex> lock(queueMutex);
+        while (readsReady.empty())
+            queueNotEmpty.wait(lock);
+        read = std::move(readsReady.front());
+        readsReady.pop();
+    }
+    queueNotFull.notify_one();
     return read;
 }
 

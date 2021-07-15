@@ -30,6 +30,7 @@ private:
     std::queue<BamRead> readsReady;
     std::mutex queueMutex;
     std::condition_variable queueNotEmpty;
+    std::condition_variable queueNotFull;
     std::thread readerThread;
 
 };
