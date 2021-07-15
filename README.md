@@ -12,7 +12,7 @@ make
 # Usage
 
 ```bash
-./bambam -b <bam_file> -f <fasta_file>
+./bambam -b <bam_file> -f <fasta_file> -o <output_directory>
 ```
 
 If everything goes well, this will produce the following files for each
