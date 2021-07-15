@@ -52,6 +52,14 @@ int BamReader::setBamFile(const std::string &filename) {
     return 0;
 }
 
+void BamReader::run(void) {
+    readerThread = std::thread(&BamReader::read, this);
+}
+
+void BamReader::wait() {
+    readerThread.join();
+}
+
 void BamReader::read(void) {
     while (true) {
         size_t r;

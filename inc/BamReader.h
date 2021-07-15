@@ -8,11 +8,14 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+#include <thread>
 
 class BamReader {
 
 public:
     int setBamFile(const std::string &filename);
+    void run(void);
+    void wait(void);
     BamRead takeNextRead(void);
     BamRead getNextRead(void);
 
@@ -27,6 +30,7 @@ private:
     std::queue<BamRead> readsReady;
     std::mutex queueMutex;
     std::condition_variable queueNotEmpty;
+    std::thread readerThread;
 
 };
 
