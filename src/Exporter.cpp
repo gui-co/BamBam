@@ -50,14 +50,14 @@ void Exporter::exportTranscripts(void) {
         std::string sequenceName = sequence.getName();
         if (sequenceName.empty())
             break;
-        else
-            std::cout << "Export of " << sequenceName << std::endl;
 
-        std::ofstream fileLog(saveDirectory / path(sequenceName + ".data"));
-        std::ofstream filePlus(saveDirectory
-                               / path(sequenceName + "_plus.data"));
-        std::ofstream fileMinus(saveDirectory
-                                / path(sequenceName +"_minus.data"));
+        path logFilename = path(sequenceName + ".data");
+        path plusFilename = path(sequenceName + "_plus.data");
+        path minusFilename = path(sequenceName +"_minus.data");
+        std::ofstream fileLog(saveDirectory / logFilename);
+        std::ofstream filePlus(saveDirectory / plusFilename);
+        std::ofstream fileMinus(saveDirectory / minusFilename);
+
         filePlus << std::fixed << std::setprecision(5);
         fileMinus << std::fixed << std::setprecision(5);
 
@@ -99,6 +99,12 @@ void Exporter::exportTranscripts(void) {
             }
             transcriptIt++;
         }
+
+        std::cout << "[INFO] \"" << sequenceName << "\" exported:"
+                  << std::endl;
+        std::cout << "    * " << saveDirectory / logFilename << std::endl;
+        std::cout << "    * " << saveDirectory / plusFilename << std::endl;
+        std::cout << "    * " << saveDirectory / minusFilename << std::endl;
     }
 }
 

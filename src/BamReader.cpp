@@ -46,6 +46,9 @@ int BamReader::setBamFile(const std::string &filename) {
         readBam(reinterpret_cast<char*>(&lRef), sizeof(lRef));
     }
 
+    std::cout << "[INFO] BAM file read, " << sequences.size() << " sequences "
+              << "found" << std::endl;
+
     return 0;
 }
 

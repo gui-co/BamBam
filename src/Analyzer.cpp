@@ -52,6 +52,8 @@ void Analyzer::analyze(void) {
 
         if (currentSequence.getName() == "") {
             currentSequence = Sequence(sequenceName, refSeq);
+            std::cout << "[INFO] starting analysis of \"" << sequenceName
+                      << "\"" << std::endl;
         } else if (currentSequence.getName() != sequenceName) {
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
@@ -59,6 +61,8 @@ void Analyzer::analyze(void) {
             }
             queueNotEmpty.notify_one();
             currentSequence = Sequence(sequenceName, refSeq);
+            std::cout << "[INFO] starting analysis of \"" << sequenceName
+                      << "\"" << std::endl;
         }
 
         Transcript &transcript = currentSequence.getTranscript(

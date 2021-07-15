@@ -74,6 +74,9 @@ int FastaReader::readFastaFile(const std::string &filename) {
         }
     }
 
+    std::cout << "[INFO] FASTA file read, "<< sequences.size() << " sequences "
+              << "found" << std::endl;
+
     return 0;
 }
 
