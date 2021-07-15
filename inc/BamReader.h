@@ -5,6 +5,9 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
 
 class BamReader {
 
@@ -19,6 +22,9 @@ private:
     size_t bamPosition;
     int inflateNextBlock(void);
     size_t readBam(char *buffer, size_t count);
+    std::queue<BamRead> readsReady;
+    std::mutex queueMutex;
+    std::condition_variable queueNotEmpty;
 
 };
 
