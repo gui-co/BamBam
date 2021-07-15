@@ -24,7 +24,7 @@ void Analyzer::analyze(void) {
         return;
     }
 
-    BamRead read = bamReader->getNextRead();
+    BamRead read = bamReader->takeNextRead();
     while (!read.getName().empty()) {
         std::string sequenceName = read.getSequenceName();
         std::string refSeq = fastaReader->getSequence(sequenceName);
@@ -32,14 +32,14 @@ void Analyzer::analyze(void) {
             std::cout << "[ERROR] sequence \"" << sequenceName << "\" not "
                          "found in fasta file" << std::endl;
             while (read.getSequenceName() == sequenceName)
-                read = bamReader->getNextRead();
+                read = bamReader->takeNextRead();
             continue;
         }
 
         uint8_t flag = read.getFlag();
         // ignore reads with these flag values
         if (flag & 0x0004 || flag & 0x0200 || flag & 0x0400 || flag & 0x0800) {
-            read = bamReader->getNextRead();
+            read = bamReader->takeNextRead();
             continue;
         }
         // Get strand polarity
@@ -116,7 +116,7 @@ void Analyzer::analyze(void) {
             }
         }
 
-        read = bamReader->getNextRead();
+        read = bamReader->takeNextRead();
     }
 
     // push last sequence and an empty one
