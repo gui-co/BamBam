@@ -23,6 +23,7 @@ private:
     size_t bamPosition;
     int inflateNextBlock(void);
     size_t readBam(char *buffer, size_t count);
+    void read(void);
     std::queue<BamRead> readsReady;
     std::mutex queueMutex;
     std::condition_variable queueNotEmpty;

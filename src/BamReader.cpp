@@ -52,6 +52,53 @@ int BamReader::setBamFile(const std::string &filename) {
     return 0;
 }
 
+void BamReader::read(void) {
+    while (true) {
+        size_t r;
+        size_t size;
+        bool success = true;
+        size_t progress = 0;
+
+        // blocksize
+        uint32_t blockSize;
+        size = sizeof(blockSize);
+        r = readBam(reinterpret_cast<char*>(&blockSize), size);
+        if (r != size) {
+            // end of file
+            {
+                std::lock_guard<std::mutex> lock(queueMutex);
+                readsReady.push(BamRead());
+            }
+            queueNotEmpty.notify_one();
+            break;
+        }
+
+        char *block;
+        block = new char[blockSize];
+        r = readBam(reinterpret_cast<char*>(block), blockSize);
+        if (r != blockSize) {
+            std::cout << "[ERROR] alignment block is corrupted in BAM file"
+                      << std::endl;
+            {
+                std::lock_guard<std::mutex> lock(queueMutex);
+                readsReady.push(BamRead());
+            }
+            queueNotEmpty.notify_one();
+            break;
+        }
+
+        BamRead read;
+        read.initFromBamBlock(block, blockSize);
+        read.setSequenceName(sequences);
+        delete[] block;
+        {
+            std::lock_guard<std::mutex> lock(queueMutex);
+            readsReady.push(std::move(read));
+        }
+        queueNotEmpty.notify_one();
+    }
+}
+
 BamRead BamReader::getNextRead(void) {
     size_t r;
     size_t size;
