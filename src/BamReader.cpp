@@ -83,6 +83,15 @@ BamRead BamReader::getNextRead(void) {
     return read;
 }
 
+BamRead BamReader::takeNextRead(void) {
+    std::unique_lock<std::mutex> lock(queueMutex);
+    while (readsReady.empty())
+        queueNotEmpty.wait(lock);
+    BamRead read = std::move(readsReady.front());
+    readsReady.pop();
+    return read;
+}
+
 int BamReader::inflateNextBlock(void) {
     // header
     uint8_t id1;

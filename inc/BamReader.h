@@ -13,6 +13,7 @@ class BamReader {
 
 public:
     int setBamFile(const std::string &filename);
+    BamRead takeNextRead(void);
     BamRead getNextRead(void);
 
 private:
