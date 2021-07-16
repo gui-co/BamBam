@@ -32,7 +32,7 @@ void Exporter::exportTranscripts(void) {
         while (transcriptIt != sequence.end()) {
             Transcript &transcript = (*transcriptIt);
             fileLog << transcript.startPosition + 1 << " "
-                    << transcript.startPosition + 1 + transcript.length
+                    << transcript.startPosition + 1 + transcript.size()
                     << std::endl;
 
             std::ofstream *file;

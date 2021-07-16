@@ -23,7 +23,6 @@ public:
     void addDeletion(size_t position);
     bool isPlus(void);
     size_t startPosition;
-    size_t length;
 
 private:
     std::string sequenceName;
